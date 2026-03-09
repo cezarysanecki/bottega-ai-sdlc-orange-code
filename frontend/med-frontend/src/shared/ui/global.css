@@ -1,0 +1,14 @@
+:root {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  background-color: #f5f6f8;
+}
+
+/* Legacy overrides that will haunt us later. */
+.fc {
+  font-size: 12px;
+}

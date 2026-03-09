@@ -1,0 +1,112 @@
+type Query {
+    clinicGreeting: String
+    appointmentDigest: [String!]
+    patients: [PatientSummary!]!
+    patientByCode(code: String!): PatientSummary
+    providers: [ProviderSummary!]!
+    invoices(status: String): [Invoice!]!
+    telehealthSessions: [TelehealthSession!]!
+    telehealthSession(vendorSessionId: String!): TelehealthSession
+    dashboardStats: DashboardStats!
+}
+
+type Mutation {
+    createAppointment(request: AppointmentInput!): Appointment!
+    generateInvoice(encounterCode: String!): Invoice!
+    syncTelehealthSession(vendorSessionId: String!): TelehealthSession!
+    checkInsuranceEligibility(patientCode: String!): InsuranceEligibility!
+    invalidateInsuranceEligibility(patientCode: String!): Boolean!
+    postPayment(input: PaymentInput!): Invoice!
+}
+
+type PatientSummary {
+    patientCode: String!
+    firstName: String!
+    lastName: String!
+    dateOfBirth: String!
+    insurancePlanCode: String
+    insuranceProvider: String
+}
+
+type ProviderSummary {
+    providerCode: String!
+    fullName: String!
+    specialty: String!
+    officeRoom: String
+    preferredContact: String
+}
+
+type Appointment {
+    id: ID!
+    appointmentUid: String!
+    status: String!
+    startTime: String
+    endTime: String
+    patient: PatientSummary!
+    provider: ProviderSummary!
+    roomCode: String
+    legacyNotes: String
+}
+
+type Invoice {
+    invoiceNumber: String!
+    status: String!
+    issuedAt: String
+    dueDate: String
+    totalAmount: Float!
+    balanceCents: Int!
+    notes: String
+    items: [InvoiceItem!]!
+}
+
+type InvoiceItem {
+    lineItemCode: String!
+    description: String
+    quantity: Int!
+    unitAmount: Float!
+    legacyTaxCents: Int
+}
+
+input AppointmentInput {
+    patientCode: String!
+    providerCode: String!
+    appointmentType: String
+    startTime: String!
+    endTime: String!
+    roomCode: String
+}
+
+type TelehealthSession {
+    vendorSessionId: String!
+    status: String!
+    failureReason: String
+    startedAt: String
+    endedAt: String
+    lastSyncedAt: String
+}
+
+input PaymentInput {
+    invoiceNumber: String!
+    amountCents: Int!
+    method: String
+    paymentReference: String
+    postedBy: String
+}
+
+type InsuranceEligibility {
+    patientCode: String!
+    planCode: String
+    status: String
+    copay: Int
+    deductibleRemaining: Int
+    coverageNotes: String
+    fetchedAt: String
+    fromCache: Boolean!
+}
+
+type DashboardStats {
+    totalPatients: Int!
+    activeProviders: Int!
+    openInvoices: Int!
+    upcomingAppointments: Int!
+}

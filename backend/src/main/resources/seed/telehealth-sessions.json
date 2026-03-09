@@ -1,0 +1,14 @@
+[
+  {
+    "vendorSessionId": "TH-SESSION-42",
+    "appointmentCode": "PAT-1002",
+    "status": "READY",
+    "startOffsetMinutes": 90
+  },
+  {
+    "vendorSessionId": "TH-SESSION-43",
+    "appointmentCode": "PAT-1001",
+    "status": "FAILED",
+    "failureReason": "handshake-timeout"
+  }
+]

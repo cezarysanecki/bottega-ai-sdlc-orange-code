@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: med-backend
+  datasource:
+    url: jdbc:postgresql://localhost:5433/meddb
+    username: med
+    password: med
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+  graphql:
+    graphiql:
+      enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+
+integration:
+  telehealth:
+    endpoint: http://telehealth-mock:8080/api
+
+logging:
+  level:
+    root: INFO
+    com.clinictraining: DEBUG
+
+security:
+  jwt:
+    secret: dev-secret-key-change-in-production

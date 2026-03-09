@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: med-backend
+  # DataSource configured by EmbeddedPostgresConfig
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+  graphql:
+    graphiql:
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+
+# External services disabled in demo mode - fallbacks are used
+integration:
+  telehealth:
+    endpoint: http://localhost:9999/disabled
+    soap-endpoint: http://localhost:9999/disabled
+  insurance:
+    base-url: http://localhost:9999/disabled
+  pdf:
+    base-url: http://localhost:9999/disabled
+
+logging:
+  level:
+    root: INFO
+    com.clinictraining: DEBUG
+    io.zonky.test.db: WARN
+
+security:
+  jwt:
+    secret: demo-secret-key-for-training
+
+# Demo mode specific settings
+demo:
+  embedded-postgres:
+    enabled: true

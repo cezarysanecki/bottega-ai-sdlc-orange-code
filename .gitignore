@@ -1,0 +1,23 @@
+# Node
+node_modules/
+.pnpm-store/
+*.log
+
+# Java / Build
+.gradle/
+build/
+out/
+target/
+dist/
+!gradle/wrapper/
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+/.playwright-mcp/
+/.serena/

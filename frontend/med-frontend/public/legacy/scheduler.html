@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Legacy Scheduler</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.5/dist/fullcalendar.min.css"
+    />
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        padding: 12px;
+      }
+      #calendar {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Legacy Scheduler (jQuery)</h2>
+    <div id="calendar"></div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.5/dist/fullcalendar.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // Check if fullCalendar is available
+        if (typeof $.fn.fullCalendar === 'undefined') {
+          console.error('FullCalendar plugin not loaded');
+          $('#calendar').html('<p style="color: red;">Error: FullCalendar library failed to load. Please check your internet connection.</p>');
+          return;
+        }
+
+        // Get auth token from localStorage (accessible since same origin)
+        var authToken = localStorage.getItem('auth_token');
+
+        // Function to fetch appointments from API
+        function fetchAppointments(start, end, timezone, callback) {
+          if (!authToken) {
+            console.warn('No auth token found, using mock data');
+            callback(getMockEvents());
+            return;
+          }
+
+          $.ajax({
+            url: '/api/appointments',
+            method: 'GET',
+            headers: {
+              'Authorization': 'Bearer ' + authToken
+            },
+            success: function(response) {
+              // Handle paginated response - extract content array
+              var appointments = response.content || response;
+
+              // Transform appointments to FullCalendar events
+              var events = appointments.map(function(apt) {
+                var statusColors = {
+                  'SCHEDULED': '#1890ff',
+                  'CONFIRMED': '#52c41a',
+                  'IN_PROGRESS': '#faad14',
+                  'COMPLETED': '#d9d9d9',
+                  'CANCELLED': '#ff4d4f',
+                  'NO_SHOW': '#8c8c8c'
+                };
+
+                return {
+                  id: apt.id,
+                  title: apt.provider.fullName + ' - ' + apt.patient.firstName + ' ' + apt.patient.lastName,
+                  start: apt.startTime,
+                  end: apt.endTime,
+                  color: statusColors[apt.status] || '#1890ff',
+                  status: apt.status,
+                  appointmentCode: apt.appointmentCode,
+                  patientName: apt.patient.firstName + ' ' + apt.patient.lastName,
+                  providerName: apt.provider.fullName,
+                  room: apt.room ? apt.room.roomCode : 'N/A'
+                };
+              });
+              callback(events);
+            },
+            error: function(xhr, status, error) {
+              console.error('Failed to fetch appointments:', error);
+              console.warn('Falling back to mock data');
+              callback(getMockEvents());
+            }
+          });
+        }
+
+        // Mock data fallback
+        function getMockEvents() {
+          return [
+            {
+              title: 'Dr. Singh - Routine Checkup',
+              start: moment().hour(9).minute(30).format(),
+              color: '#1890ff'
+            },
+            {
+              title: 'Dr. Lee - Telehealth Intake',
+              start: moment().add(1, 'day').hour(11).format(),
+              color: '#52c41a'
+            }
+          ];
+        }
+
+        // Initialize FullCalendar
+        $('#calendar').fullCalendar({
+          defaultView: 'agendaWeek',
+          header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,agendaWeek,agendaDay'
+          },
+          events: fetchAppointments,
+          eventClick: function(event) {
+            if (event.appointmentCode) {
+              alert(
+                'Appointment: ' + event.appointmentCode + '\n' +
+                'Patient: ' + event.patientName + '\n' +
+                'Provider: ' + event.providerName + '\n' +
+                'Room: ' + event.room + '\n' +
+                'Status: ' + event.status
+              );
+            }
+          },
+          eventRender: function(event, element) {
+            // Add tooltip with status
+            if (event.status) {
+              element.attr('title', 'Status: ' + event.status);
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
