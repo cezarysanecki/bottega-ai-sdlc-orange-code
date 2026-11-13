@@ -4,7 +4,7 @@
 set -euo pipefail
 name="$1"; tools="$2"; prompt_file="$3"; shift 3
 root="$(git rev-parse --show-toplevel)"
-out="$root/.training/evidence/$name"
+out="${EVIDENCE_DIR:-$root/.training/evidence}/$name"
 start=$(date +%s)
 claude -p "$(cat "$prompt_file")" \
   --setting-sources project,local \

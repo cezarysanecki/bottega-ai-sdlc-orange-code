@@ -1,0 +1,2 @@
+Ignoring 4 permissions.allow entries from .claude/settings.json: this workspace has not been trusted. Run Claude Code interactively here once and accept the trust dialog, or set projects["/private/tmp/claude-501/-Users-cezarysanecki-orca-workspaces-training-ai-sdlc-orange-demo-app-orange-proba-13-cwiczen-cc/e068b42e-1609-41c8-aa75-e5cbe96f8dbc/scratchpad/ex11-B"].hasTrustDialogAccepted: true in /Users/cezarysanecki/.claude.json.
+claude exit=1

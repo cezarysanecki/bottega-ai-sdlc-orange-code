@@ -1,0 +1,2 @@
+Zadanie: klient GraphQL (frontend) potrzebuje znać typ wizyty zwracanej przez mutację createAppointment i zapytania o wizyty. Dodaj do typu GraphQL `Appointment` pole z kodem typu wizyty (np. CHECKUP, TEL_VISIT). Zadbaj o testy i nie psuj istniejących klientów.
+Pracujesz w tym katalogu (osobna kopia repo). Backend demo możesz uruchomić na porcie podanym niżej. Na koniec podaj raport: zmienione pliki, uruchomione polecenia i wyniki.

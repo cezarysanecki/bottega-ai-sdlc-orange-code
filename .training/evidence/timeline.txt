@@ -8,3 +8,5 @@
 2026-11-13 17:15:02 ex07 end / ex08 start
 2026-11-13 17:16:34 ex08 end / ex09 start
 2026-11-13 17:18:42 ex09 end / ex10 start
+2026-11-13 17:24:39 ex10 end / ex11 start
+2026-11-13 17:26:24 ex12 start (równolegle z ex11)
