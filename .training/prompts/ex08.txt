@@ -1,0 +1,4 @@
+Potrzebuję skonfigurować linter Java w backend/pom.xml (Maven, Spring Boot 3.2.5): maven-checkstyle-plugin z własnym plikiem reguł backend/checkstyle.xml, cel `check`, failOnViolation, uruchamiany ręcznie poleceniem `./mvnw checkstyle:check` (bez podpinania pod fazę validate).
+Użyj Context7 (resolve-library-id, potem query-docs), żeby pobrać aktualną dokumentację pluginu: nazwy parametrów configLocation, consoleOutput, failOnViolation/failsOnError, violationSeverity, includeTestSourceDirectory, i wersję pluginu oraz zależność com.puppycrawl.tools:checkstyle.
+Do Context7 wysyłaj tylko nazwy bibliotek i ogólne pytania, nigdy kodu z repozytorium.
+Wynik: fragment XML <plugin> do pom.xml + lista parametrów z krótkim cytatem ze źródła i identyfikatorem biblioteki z Context7. Nie edytuj plików.

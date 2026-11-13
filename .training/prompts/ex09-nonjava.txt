@@ -1,0 +1,1 @@
+Utwórz plik .pipeline/hook-check.md z jedną linią "test hooka dla pliku innego typu". Napisz, czy po zapisie dostałeś jakiś feedback z narzędzi projektu.

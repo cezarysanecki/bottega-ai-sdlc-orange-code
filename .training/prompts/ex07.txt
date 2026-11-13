@@ -1,0 +1,5 @@
+Użyj narzędzia LSP (nie Grep), żeby w pliku backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java:
+1. znaleźć wszystkie referencje metody calculateCharge (findReferences na jej deklaracji),
+2. pokazać incomingCalls tej metody,
+3. sprawdzić hover dla requiresSedation w klasie PricingContext (typ zwracany).
+Jeśli LSP zwróci błąd lub pusty wynik zaraz po starcie, spróbuj ponownie (serwer indeksuje projekt). Podaj surowe wyniki: plik:linia dla każdej referencji. Na końcu jednym zdaniem: czym ten wynik różni się od wyniku grep "calculateCharge".

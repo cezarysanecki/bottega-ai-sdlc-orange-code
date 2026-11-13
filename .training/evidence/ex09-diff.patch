@@ -1,0 +1,118 @@
+diff --git a/.claude/settings.json b/.claude/settings.json
+index 11c6c87..aeb2da5 100644
+--- a/.claude/settings.json
++++ b/.claude/settings.json
+@@ -6,5 +6,24 @@
+       "Bash(git status:*)",
+       "Bash(git diff:*)"
+     ]
++  },
++  "hooks": {
++    "PostToolUse": [
++      {
++        "matcher": "Edit|Write|MultiEdit",
++        "hooks": [
++          {
++            "type": "command",
++            "command": "python3",
++            "args": [
++              "-I",
++              "${CLAUDE_PROJECT_DIR}/.claude/hooks/java_lint.py"
++            ],
++            "timeout": 200,
++            "statusMessage": "Checkstyle dla edytowanego pliku Java"
++          }
++        ]
++      }
++    ]
+   }
+ }
+diff --git a/.training/evidence/timeline.txt b/.training/evidence/timeline.txt
+index e19abc2..ead2847 100644
+--- a/.training/evidence/timeline.txt
++++ b/.training/evidence/timeline.txt
+@@ -4,3 +4,6 @@
+ 2026-11-13 17:00:47 ex03 end / ex04 start
+ 2026-11-13 17:06:45 ex04 end / ex05 start
+ 2026-11-13 17:07:49 ex05 end / ex06 start
++2026-11-13 17:13:18 ex06 end / ex07 start
++2026-11-13 17:15:02 ex07 end / ex08 start
++2026-11-13 17:16:34 ex08 end / ex09 start
+diff --git a/.training/scripts/headless.sh b/.training/scripts/headless.sh
+index 44bd60d..c4d7d0e 100755
+--- a/.training/scripts/headless.sh
++++ b/.training/scripts/headless.sh
+@@ -11,7 +11,7 @@ claude -p "$(cat "$prompt_file")" \
+   --tools "$tools" \
+   --no-session-persistence --strict-mcp-config \
+   --output-format stream-json --verbose \
+-  "$@" > "$out.jsonl" 2> "$out.stderr" || echo "claude exit=$?" >> "$out.stderr"
++  "$@" < /dev/null > "$out.jsonl" 2> "$out.stderr" || echo "claude exit=$?" >> "$out.stderr"
+ end=$(date +%s)
+ python3 -I - "$out.jsonl" "$out" "$((end-start))" <<'PY'
+ import json, sys
+diff --git a/CLAUDE.md b/CLAUDE.md
+index e4fccd1..79e5289 100644
+--- a/CLAUDE.md
++++ b/CLAUDE.md
+@@ -16,6 +16,7 @@ Backend, katalog `backend/`, JDK 22–26 (sprawdzone 25 i 26):
+ - `./mvnw -B -Dtest=BillingRulesEngineTest test` – jedna klasa testów.
+ - `./mvnw -B -Dtest=PaymentServiceIT test` – testy integracyjne, wymagają działającego Dockera/Podmana (Testcontainers).
+ - `./mvnw -B spring-boot:run -Dspring-boot.run.profiles=demo -DskipTests` – backend z wbudowanym PostgreSQL na 8080; inny port: dodaj `-Dspring-boot.run.arguments=--server.port=18180`.
++- `./mvnw -B checkstyle:check` – linter Java, jedna reguła `UnusedImports` (`backend/checkstyle.xml`). Na całym kodzie zgłasza 2 znane naruszenia legacy (`ControllerLoggingAspect`, `InvoiceServiceTest`); hook `.claude/hooks/java_lint.py` sprawdza tylko edytowany plik.
+ 
+ Frontend, katalog `frontend/med-frontend/`, Node 18+:
+ - `npm ci --no-audit --no-fund`, `npm run build`, `npm run lint` (obecnie 0 błędów, 13 ostrzeżeń).
+diff --git a/backend/pom.xml b/backend/pom.xml
+index a4612a8..a428ec1 100644
+--- a/backend/pom.xml
++++ b/backend/pom.xml
+@@ -191,6 +191,24 @@
+                 <artifactId>spring-boot-maven-plugin</artifactId>
+                 <version>${spring-boot.version}</version>
+             </plugin>
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-checkstyle-plugin</artifactId>
++                <version>3.6.0</version>
++                <configuration>
++                    <configLocation>${project.basedir}/checkstyle.xml</configLocation>
++                    <consoleOutput>true</consoleOutput>
++                    <failOnViolation>true</failOnViolation>
++                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
++                </configuration>
++                <dependencies>
++                    <dependency>
++                        <groupId>com.puppycrawl.tools</groupId>
++                        <artifactId>checkstyle</artifactId>
++                        <version>14.3.0</version>
++                    </dependency>
++                </dependencies>
++            </plugin>
+         </plugins>
+     </build>
+ </project>
+\ No newline at end of file
+diff --git a/backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java b/backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java
+index c46d7d8..f782cb2 100644
+--- a/backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java
++++ b/backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java
+@@ -14,7 +14,6 @@ import java.time.DayOfWeek;
+ import java.time.LocalDate;
+ import java.time.ZonedDateTime;
+ import java.util.HashMap;
+-import java.util.List;
+ import java.util.Map;
+ import java.util.Optional;
+ 
+@@ -103,6 +102,10 @@ public class BillingRulesEngine {
+         this.applicationContext = applicationContext;
+     }
+ 
++    /**
++     * Calculates the charge for a procedure. The procedure code is normalized with {@code trim()};
++     * a {@code null} or blank code yields {@link BigDecimal#ZERO}.
++     */
+     public BigDecimal calculateCharge(String procedureCode, PricingContext context) {
+         if (procedureCode == null || procedureCode.trim().isEmpty()) {
+             log.warn("Empty procedure code provided");

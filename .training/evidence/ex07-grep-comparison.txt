@@ -1,0 +1,22 @@
+# grep -rn calculateCharge (porównanie z LSP)
+backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java:68
+backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java:77
+backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java:88
+backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java:101
+backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java:108
+backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java:120
+backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java:130
+backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java:134
+backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java:152
+backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java:162
+backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java:163
+backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java:171
+backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java:175
+backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java:183
+backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java:186
+backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java:200
+backend/src/test/java/com/clinictraining/billing/InvoiceServiceTest.java:106
+backend/src/test/java/com/clinictraining/billing/InvoiceServiceTest.java:144
+backend/src/test/java/com/clinictraining/billing/InvoiceServiceTest.java:146
+backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java:106
+backend/src/main/java/com/clinictraining/billing/InvoiceService.java:72

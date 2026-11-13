@@ -1,0 +1,14 @@
+## Java poprawna (PatientQueryService.java)
+{"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": "Checkstyle: brak narusze\u0144 w com/clinictraining/patient/PatientQueryService.java."}}
+exit=0
+## Java z naruszeniem (BillingRulesEngine.java, nieużywany java.util.List)
+Checkstyle zgłosił naruszenia w com/clinictraining/legacy/BillingRulesEngine.java (zmiana jest już zapisana):
+[ERROR] src/main/java/com/clinictraining/legacy/BillingRulesEngine.java:[17,8] (imports) UnusedImports: Unused import - java.util.List.
+exit=2
+## Plik innego typu (CLAUDE.md)
+exit=0
+## Ścieżka ze znakami powłoki (nie istnieje, ma być pominięta bez wykonania)
+java-lint: pominięto plik o nietypowej nazwie: x;touch $(echo PWNED).java
+exit=0
+## Java poza backend/src (frontend? .training)
+exit=0

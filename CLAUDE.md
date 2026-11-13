@@ -16,6 +16,7 @@ Backend, katalog `backend/`, JDK 22–26 (sprawdzone 25 i 26):
 - `./mvnw -B -Dtest=BillingRulesEngineTest test` – jedna klasa testów.
 - `./mvnw -B -Dtest=PaymentServiceIT test` – testy integracyjne, wymagają działającego Dockera/Podmana (Testcontainers).
 - `./mvnw -B spring-boot:run -Dspring-boot.run.profiles=demo -DskipTests` – backend z wbudowanym PostgreSQL na 8080; inny port: dodaj `-Dspring-boot.run.arguments=--server.port=18180`.
+- `./mvnw -B checkstyle:check` – linter Java, jedna reguła `UnusedImports` (`backend/checkstyle.xml`). Na całym kodzie zgłasza 2 znane naruszenia legacy (`ControllerLoggingAspect`, `InvoiceServiceTest`); hook `.claude/hooks/java_lint.py` sprawdza tylko edytowany plik.
 
 Frontend, katalog `frontend/med-frontend/`, Node 18+:
 - `npm ci --no-audit --no-fund`, `npm run build`, `npm run lint` (obecnie 0 błędów, 13 ostrzeżeń).

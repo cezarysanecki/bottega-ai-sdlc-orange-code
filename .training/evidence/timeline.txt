@@ -4,3 +4,6 @@
 2026-11-13 17:00:47 ex03 end / ex04 start
 2026-11-13 17:06:45 ex04 end / ex05 start
 2026-11-13 17:07:49 ex05 end / ex06 start
+2026-11-13 17:13:18 ex06 end / ex07 start
+2026-11-13 17:15:02 ex07 end / ex08 start
+2026-11-13 17:16:34 ex08 end / ex09 start

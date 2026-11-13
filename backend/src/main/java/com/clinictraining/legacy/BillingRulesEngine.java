@@ -14,7 +14,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -103,6 +102,10 @@ public class BillingRulesEngine {
         this.applicationContext = applicationContext;
     }
 
+    /**
+     * Calculates the charge for a procedure. The procedure code is normalized with {@code trim()};
+     * a {@code null} or blank code yields {@link BigDecimal#ZERO}.
+     */
     public BigDecimal calculateCharge(String procedureCode, PricingContext context) {
         if (procedureCode == null || procedureCode.trim().isEmpty()) {
             log.warn("Empty procedure code provided");

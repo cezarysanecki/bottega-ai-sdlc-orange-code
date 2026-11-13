@@ -1,0 +1,3 @@
+W backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java dodaj krótki Javadoc (2–3 linie) nad metodą calculateCharge: kod procedury jest normalizowany przez trim(), a null/pusty kod daje 0.
+Jeżeli po edycji narzędzia projektu zgłoszą naruszenie w tym pliku, popraw je, o ile to mała zmiana w tym samym pliku, i nie ruszaj niczego innego.
+Na końcu napisz, jaki feedback dostałeś po każdej edycji.

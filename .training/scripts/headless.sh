@@ -11,7 +11,7 @@ claude -p "$(cat "$prompt_file")" \
   --tools "$tools" \
   --no-session-persistence --strict-mcp-config \
   --output-format stream-json --verbose \
-  "$@" > "$out.jsonl" 2> "$out.stderr" || echo "claude exit=$?" >> "$out.stderr"
+  "$@" < /dev/null > "$out.jsonl" 2> "$out.stderr" || echo "claude exit=$?" >> "$out.stderr"
 end=$(date +%s)
 python3 -I - "$out.jsonl" "$out" "$((end-start))" <<'PY'
 import json, sys

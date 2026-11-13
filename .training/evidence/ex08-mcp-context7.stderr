@@ -1,0 +1,2 @@
+Ignoring 4 permissions.allow entries from .claude/settings.json: this workspace has not been trusted. Run Claude Code interactively here once and accept the trust dialog, or set projects["/Users/cezarysanecki/_git/training-ai-sdlc-orange-demo-app"].hasTrustDialogAccepted: true in /Users/cezarysanecki/.claude.json.
+Warning: no stdin data received in 3s, proceeding without it. If piping from a slow command, redirect stdin explicitly: < /dev/null to skip, or wait longer.
