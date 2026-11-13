@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import com.clinictraining.billing.model.Procedure;
@@ -17,6 +18,9 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -60,7 +64,7 @@ class BillingRulesEngineTest {
         basicContext.setSedation(false);
         basicContext.setAssistant(false);
 
-        when(applicationContext.getBean(anyString())).thenReturn(null);
+        lenient().when(applicationContext.getBean(anyString())).thenReturn(null);
     }
 
     @Test
@@ -163,6 +167,15 @@ class BillingRulesEngineTest {
         BigDecimal padded = billingRulesEngine.calculateCharge(" " + LAB_CODE + " ", basicContext);
 
         assertEquals(trimmed, padded);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"   "})
+    void shouldReturnZeroForMissingOrBlankProcedureCode(String procedureCode) {
+        BigDecimal result = billingRulesEngine.calculateCharge(procedureCode, basicContext);
+
+        assertEquals(BigDecimal.ZERO, result);
     }
 
     @Test
