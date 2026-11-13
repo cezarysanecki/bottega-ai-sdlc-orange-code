@@ -171,20 +171,48 @@ Wymóg: 2 × 405 min = 810 min zajęć, z czego 60% to 486 min praktyki uczestni
 
   Każde z nich może zjeść zapas, dlatego potrzebny jest wcześniejszy setup: JDK, Docker, `npm ci`, jdtls i jeden przebieg `./mvnw -B test`.
 
-### Rozpiska bloków: teoria (T) i praktyka (P), w minutach
-Dzień 1
-- 09:00–10:45: T 09:00–09:35 (mapa SDLC, procesy, pokaz aplikacji) · P 09:35–10:10 ćw. 1 · T 10:10–10:45 (omówienie ćw. 1; model, agent, harness, kontekst) → T70/P35
-- 11:00–12:45: T 11:00–11:25 (kontekst; CLAUDE.md, settings, skille, agenci) · P 11:25–12:25 ćw. 2 · T 12:25–12:45 (zmyślone polecenia, granice CLAUDE.md) → T45/P60
-- 13:30–15:15: T 13:30–13:50 (wymaganie, kryteria, Plan Mode) · P 13:50–15:00 ćw. 3 · T 15:00–15:15 (red/green, diff) → T35/P70
-- 15:30–17:00: T 15:30–15:45 (skill a subagent, kontrakt artefaktu) · P 15:45–16:20 ćw. 4 · P 16:20–16:50 ćw. 5 · T 16:50–17:00 (podsumowanie) → T25/P65
+### Rozpiska bloków: teoria (T) i praktyka (P)
+**Dzień 1** (T175 / P230)
 
-Dzień 2
-- 09:00–10:45: T 09:00–09:10 (recap) · P 09:10–09:55 ćw. 6 · T 09:55–10:05 (LSP a grep a linter; MCP) · P 10:05–10:25 ćw. 7 · P 10:25–10:40 ćw. 8 · T 10:40–10:45 → T25/P80
-- 11:00–12:45: T 11:00–11:25 (hooki, PostToolUse nie cofa zmian, bezpieczeństwo skryptu) · P 11:25–12:35 ćw. 9 · T 12:35–12:45 → T35/P70
-- 13:30–15:15: T 13:30–13:40 (workflow, refaktoring bez zmiany zachowania) · P 13:40–14:25 ćw. 10 · P 14:25–14:50 ćw. 11 · P 14:50–15:05 ćw. 12 · T 15:05–15:15 → T20/P85
-- 15:30–17:00: T 15:30–15:45 (Maister: bramki, koszt) · P 15:45–16:35 ćw. 13 · T 16:35–17:00 (porównanie z własnym workflow, zamknięcie) → T40/P50
+| Godzina | Typ | Min | Treść |
+|---|---|---|---|
+| 09:00–09:35 | T | 35 | Mapa SDLC, procesy uczestników, pokaz aplikacji |
+| 09:35–10:10 | P | 35 | Ćw. 1: rozmowa o aplikacji |
+| 10:10–10:45 | T | 35 | Omówienie ćw. 1; model, agent, harness, kontekst |
+| 11:00–11:25 | T | 25 | Kontekst; CLAUDE.md, settings, skille, agenci |
+| 11:25–12:25 | P | 60 | Ćw. 2: CLAUDE.md |
+| 12:25–12:45 | T | 20 | Zmyślone polecenia, granice CLAUDE.md |
+| 13:30–13:50 | T | 20 | Wymaganie, kryteria, Plan Mode |
+| 13:50–15:00 | P | 70 | Ćw. 3: bugfix z planem |
+| 15:00–15:15 | T | 15 | Omówienie red/green i diffu |
+| 15:30–15:45 | T | 15 | Skill a subagent, kontrakt artefaktu |
+| 15:45–16:20 | P | 35 | Ćw. 4: skill analizy |
+| 16:20–16:50 | P | 30 | Ćw. 5: subagent review |
+| 16:50–17:00 | T | 10 | Podsumowanie dnia |
 
-Suma: dzień 1 T175/P230, dzień 2 T120/P285, razem T295/P515.
+**Dzień 2** (T120 / P285)
+
+| Godzina | Typ | Min | Treść |
+|---|---|---|---|
+| 09:00–09:10 | T | 10 | Recap |
+| 09:10–09:55 | P | 45 | Ćw. 6: wspólny pipeline |
+| 09:55–10:05 | T | 10 | LSP, grep, linter; MCP |
+| 10:05–10:25 | P | 20 | Ćw. 7: LSP |
+| 10:25–10:40 | P | 15 | Ćw. 8: MCP |
+| 10:40–10:45 | T | 5 | Wnioski |
+| 11:00–11:25 | T | 25 | Hooki, PostToolUse nie cofa zmian, bezpieczeństwo skryptu |
+| 11:25–12:35 | P | 70 | Ćw. 9: hook + linter Java |
+| 12:35–12:45 | T | 10 | Omówienie |
+| 13:30–13:40 | T | 10 | Workflow SDLC, refaktoring bez zmiany zachowania |
+| 13:40–14:25 | P | 45 | Ćw. 10: workflow + refaktoring |
+| 14:25–14:50 | P | 25 | Ćw. 11: bez/ze standardami |
+| 14:50–15:05 | P | 15 | Ćw. 12: świeża sesja / handoff |
+| 15:05–15:15 | T | 10 | Porównanie standardów, handoff |
+| 15:30–15:45 | T | 15 | Maister: bramki, koszt |
+| 15:45–16:35 | P | 50 | Ćw. 13: Maister |
+| 16:35–17:00 | T | 25 | Porównanie z własnym workflow, zamknięcie |
+
+Razem T295 / P515 (szacunek).
 
 ### Uproszczenia, żeby zmieścić się w blokach
 - **Ćw. 11:** pary zamiast dwóch sesji na osobę. Połowa grupy robi wariant A, połowa B, na tej samej bazie i z tym samym promptem. Porównanie robimy na forum. Oszczędza to ok. 15 min i od razu daje więcej niż jedną parę prób.
