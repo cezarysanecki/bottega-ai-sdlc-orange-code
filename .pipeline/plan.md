@@ -1,23 +1,36 @@
-# Plan: F-01 F-02
-- Commit bazowy: 19cd052 (`backend/` bez zmian względem HEAD; dowody z analizy potwierdzone: l. 286, 289, 338, gettery `Boolean` l. 581, 584, 599)
-- Źródło: .pipeline/analysis.md
+# Plan R-02: wydzielenie ustalania rodziny procedury w `BillingRulesEngine`
 
-## Kroki
-### F-01 NPE dla rodziny PROCEDURE przy kontekście z InvoiceService
-- Test regresji (najpierw, ma zawieść): `BillingRulesEngineTest#shouldNotThrowForProcedureWhenSedationAndAssistantUnset` — `basicContext` z `setUp`, następnie `setServiceDateTime(ZonedDateTime.parse("2026-11-11T10:00:00Z"))`; najpierw `expected = calculateCharge("PROC-SUTURE", basicContext)` (sedation/assistant = `false`), potem `setSedation(null)`, `setAssistant(null)` i `actual = assertDoesNotThrow(() -> calculateCharge("PROC-SUTURE", basicContext))`; oczekiwanie: `assertEquals(expected, actual)`. Dziś: NPE na l. 286. `PROC-SUTURE` jest w `LEGACY_PRICING_TABLE` (l. 57), mock repozytorium niepotrzebny.
-- Zmiana: `backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java:286` — `if (context.requiresSedation())` → `if (Boolean.TRUE.equals(context.requiresSedation()))`; `:289` — `if (context.requiresAssistant())` → `if (Boolean.TRUE.equals(context.requiresAssistant()))`.
-- Poza zakresem: `InvoiceService.buildPricingContext` (nie dopisywać ustawiania flag), getterów `PricingContext` (nie zmieniać typu na `boolean`), `setUp` istniejących testów, pozostałych gałęzi `applyAdjustments` (F-03, F-04), formatowania pliku legacy.
+## Co zmieniam
+Dodaję jedną prywatną metodę `resolveFamily(String procedureCode)`, która robi to samo co dziś: bierze rodzinę z `PROCEDURE_FAMILIES.get(code)`, a gdy jej nie ma, woła `deriveFamilyFromCode(code)`. Podstawiam ją w dwóch miejscach, gdzie ta logika jest dziś skopiowana w całości:
+- `applyAdjustments`, `BillingRulesEngine.java:170-173`
+- `applyTax`, `BillingRulesEngine.java:417-420`
 
-### F-02 NPE w applyDiscounts, gdy `contractedInsurance` nie jest ustawione
-- Test regresji (najpierw, ma zawieść): `BillingRulesEngineTest#shouldTreatMissingContractedInsuranceAsFalse` — `basicContext` z `setUp` (contractedInsurance = `false`), `setServiceDateTime(ZonedDateTime.parse("2026-11-11T10:00:00Z"))`; `expected = calculateCharge("99213", basicContext)`, potem `setContractedInsurance(null)` i `actual = assertDoesNotThrow(() -> calculateCharge("99213", basicContext))`; oczekiwanie: `assertEquals(expected, actual)`. Dziś: NPE na l. 338. Kontekst z `setUp` zamiast gołego `new PricingContext()`, żeby test izolował l. 338 (pozostałe pola `null` mogłyby rzucić gdzie indziej).
-- Zmiana: `backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java:338` — `if (context.hasContractedInsurance())` → `if (Boolean.TRUE.equals(context.hasContractedInsurance()))`.
-- Poza zakresem: mapowanie `insurancePlan != null` → contracted w `InvoiceService` (H-02/Q-04), kumulacja rabatów, BULK_LAB (F-05), `customDiscountPercent` (F-06).
+## Co zostaje bez zmian (K3)
+- `applyDiscounts:348`, zniżka `BULK_LAB`
+- `applySurcharges:404`, dopłata `STAT_LAB`
 
-## Weryfikacja
-- `cd backend && ./mvnw -B -Dtest=BillingRulesEngineTest test` przed zmianą: 2 nowe testy FAIL (NPE), pozostałe PASS; po zmianie: wszystkie PASS.
-- `cd backend && ./mvnw -B test` — BUILD SUCCESS, brak nowych porażek.
-- `git diff --stat` — zmienione tylko `BillingRulesEngine.java` (3 linie) i `BillingRulesEngineTest.java`.
+Obie metody używają tylko `PROCEDURE_FAMILIES.get(...)`, bez fallbacku. Dla kodów spoza mapy (`LAB-HBA1C`) dostają `null`, więc nie naliczają ani zniżki, ani dopłaty. Gdyby przejęły `resolveFamily`, `LAB-HBA1C` z panelem 5 albo trybem stat dostałby inną kwotę. To jest finding F-05 i decyzja o nim zapada osobno. `deriveFamilyFromCode` też zostaje bez zmian.
+
+## Test charakteryzujący (K1, K2), przed refaktoryzacją
+- Nowa klasa `BillingRulesEngineCharacterizationTest` jako `@ParameterizedTest`. Macierz to 12 kodów z wymagania razem z `" LAB-CBC "` × 7 kontekstów: CA, TX, senior (65), weekend po godzinach, stat, panel 5, tax exempt.
+- Dane muszą być deterministyczne:
+  - stała data i godzina zamiast `ZonedDateTime.now()`, którego używa obecny `setUp`;
+  - `procedureRepository.findByProcedureCode` zwraca `Optional.empty()`;
+  - `applicationContext.getBean` zwraca `null`, więc skrypt doliczy stałe +12.34;
+  - stuby oznaczone `lenient()`.
+- Oczekiwane wartości leżą w `src/test/resources/legacy/billing-characterization.csv` (`kod;kontekst;kwota`).
+- Wartości utrwalam bez liczenia ręcznego:
+  1. Na starym kodzie uruchamiam `./mvnw -B -Dtest=BillingRulesEngineCharacterizationTest -Dcharacterization.record=true test`. Test w tym trybie zapisuje wyniki do CSV i niczego nie sprawdza.
+  2. Przeglądam CSV pod kątem kwot zerowych i duplikatów, po czym commituję go razem z testem.
+  3. Uruchamiam test w zwykłym trybie (porównanie `compareTo` z CSV) i potwierdzam, że jest zielony na starym kodzie.
+- Dopiero potem robię refaktoryzację.
+
+## Weryfikacja (K4)
+- Test charakteryzujący zielony po zmianie, a CSV bez zmian (`git diff` pusty).
+- `./mvnw -B test` zielone.
+- Hook Checkstyle bez naruszeń w obu zmienionych plikach.
 
 ## Zatwierdzenie
-- Status: ZATWIERDZONY
-- Kto: prowadzący w próbie — SYMULACJA decyzji uczestnika, nie decyzja człowieka (2026-11-13)
+- Status: ZATWIERDZONY z jedną zmianą: nie commitujesz (krok 2 bez commita), CSV zostaje w drzewie roboczym.
+- Kto: prowadzący w próbie — SYMULACJA decyzji uczestnika, nie decyzja człowieka (2026-11-13).
+

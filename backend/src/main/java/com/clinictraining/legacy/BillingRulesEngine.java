@@ -167,10 +167,7 @@ public class BillingRulesEngine {
     }
 
     private BigDecimal applyAdjustments(String procedureCode, BigDecimal base, PricingContext context) {
-        String family = PROCEDURE_FAMILIES.get(procedureCode);
-        if (family == null) {
-            family = deriveFamilyFromCode(procedureCode);
-        }
+        String family = resolveFamily(procedureCode);
 
         BigDecimal adjusted = base;
 
@@ -414,10 +411,7 @@ public class BillingRulesEngine {
     }
 
     private BigDecimal applyTax(String procedureCode, BigDecimal amount, PricingContext context) {
-        String family = PROCEDURE_FAMILIES.get(procedureCode);
-        if (family == null) {
-            family = deriveFamilyFromCode(procedureCode);
-        }
+        String family = resolveFamily(procedureCode);
 
         BigDecimal taxRate = BigDecimal.ZERO;
 
@@ -486,6 +480,14 @@ public class BillingRulesEngine {
 
     private BigDecimal roundToNearestCent(BigDecimal amount) {
         return amount.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    private String resolveFamily(String procedureCode) {
+        String family = PROCEDURE_FAMILIES.get(procedureCode);
+        if (family == null) {
+            family = deriveFamilyFromCode(procedureCode);
+        }
+        return family;
     }
 
     private String deriveFamilyFromCode(String procedureCode) {

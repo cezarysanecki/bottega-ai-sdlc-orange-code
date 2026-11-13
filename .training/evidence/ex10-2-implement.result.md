@@ -1,0 +1,9 @@
+R-02 jest zrobione. Refaktoryzacja nie zmieniła żadnej kwoty, a pełne testy backendu przechodzą.
+
+- **Red/green:** to test charakteryzujący, więc fazy red nie ma. Oczekiwane kwoty agent nagrał najpierw na starym kodzie do `billing-characterization.csv`. `BillingRulesEngineCharacterizationTest` przeszedł na starym kodzie (84/0/0) i przechodzi po zmianie (84/0/0). Przypadków jest 84: 12 kodów × 7 kontekstów.
+- **Pełne testy:** `./mvnw -B test` daje 106 testów, 0 failures, 0 errors, BUILD SUCCESS. Hook Checkstyle nie zgłosił naruszeń w żadnym z dwóch zmienionych plików Java. Liczby pochodzą z raportu agenta, sam testów nie uruchamiałem.
+- **Zgodność diffu z planem:** zgadza się. W kodzie produkcyjnym zmienił się tylko `BillingRulesEngine.java` (+8/−10). Doszła prywatna metoda `resolveFamily`, a `applyAdjustments` i `applyTax` z niej korzystają. `applyDiscounts`, `applySurcharges` i `deriveFamilyFromCode` zostały bez zmian, zgodnie z planem. Nowe, nieśledzone pliki to test i CSV, tak jak przewiduje plan. Zmiany w `.claude/agents/implementer.md`, `plan.md` i `timeline.txt` były już przed uruchomieniem agenta. Agent nadpisał `.pipeline/implementation.md`, i to jest oczekiwane.
+
+Jedno kryterium planu nie działa, i agent też to zgłosił. Plan sprawdza, że CSV się nie zmienił, przez pusty `git diff`. Zgodnie z zatwierdzeniem nic nie zostało zacommitowane, więc CSV jest nieśledzony i `git diff` jest dla niego pusty niezależnie od zawartości. Przed zmianą CSV chroni tylko to, że zwykły tryb testu nic do niego nie zapisuje. Żeby to kryterium coś sprawdzało, trzeba zacommitować CSV i test przed kolejną refaktoryzacją.
+
+Rozjazd F-05 nadal widać w nagranych wartościach: `LAB-CBC` i `LAB-HBA1C` w kontekstach STAT i PANEL_5. Zgodnie z planem nie był ruszany, bo ma osobną decyzję.

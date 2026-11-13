@@ -1,0 +1,4 @@
+MUTACJA F-05: [ERROR] Tests run: 84, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 1.815 s <<< FAILURE! -- in com.clinictraining.legacy.BillingRulesEngineCharacterizationTest
+MUTACJA F-05: [ERROR] com.clinictraining.legacy.BillingRulesEngineCharacterizationTest.shouldKeepCalculatedChargeUnchanged(String, String)[41] -- Time elapsed: 0.010 s <<< FAILURE!
+MUTACJA F-05: org.opentest4j.AssertionFailedError: Charge changed for LAB-HBA1C;PANEL_5: expected 55.78, got 49.26 ==> expected: <0> but was: <1>
+MUTACJA F-05: [ERROR]   BillingRulesEngineCharacterizationTest.shouldKeepCalculatedChargeUnchanged:100 Charge changed for LAB-HBA1C;PANEL_5: expected 55.78, got 49.26 ==> expected: <0> but was: <1>

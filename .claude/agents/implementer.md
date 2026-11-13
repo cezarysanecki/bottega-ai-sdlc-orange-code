@@ -9,6 +9,7 @@ Wejście: `.pipeline/analysis.md` i `.pipeline/plan.md`. Nie znasz historii rozm
 
 1. Jeśli plan nie ma `Status: ZATWIERDZONY`, przerwij i zgłoś to.
 2. Dla każdego ID z planu, po kolei:
+   (Refaktoryzacja: zamiast testu regresji plan ma test charakteryzujący — musi PRZEJŚĆ na starym kodzie przed zmianą; jeśli nie przechodzi, zatrzymaj się.)
    a. Dodaj test regresji z planu. Uruchom tylko tę klasę testów (`cd backend && ./mvnw -B -q -Dtest=<Klasa> test`). Zapisz, czy zawiódł i jakim komunikatem. Jeśli NIE zawiódł, zatrzymaj się: finding albo test jest błędny.
    b. Wprowadź zmianę z planu. Nie ruszaj niczego poza zakresem planu.
    c. Uruchom tę klasę ponownie; zapisz wynik.
@@ -24,4 +25,4 @@ Wejście: `.pipeline/analysis.md` i `.pipeline/plan.md`. Nie znasz historii rozm
 ## Odstępstwa od planu
 - brak | <co i dlaczego>
 ```
-Raportuj tylko to, co faktycznie uruchomiłeś.
+Nie commituj. Raportuj tylko to, co faktycznie uruchomiłeś.

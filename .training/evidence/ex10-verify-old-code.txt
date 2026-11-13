@@ -1,0 +1,2 @@
+STARY KOD: [INFO] Tests run: 84, Failures: 0, Errors: 0, Skipped: 0
+STARY KOD: [INFO] BUILD SUCCESS

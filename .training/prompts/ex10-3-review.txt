@@ -1,0 +1,4 @@
+Użyj subagenta reviewer. Przekaż mu wyłącznie:
+- diff: .training/evidence/ex10-diff-tracked.patch (refaktoryzacja + nowy test; CSV z oczekiwanymi wartościami: backend/src/test/resources/legacy/billing-characterization.csv)
+- wymaganie i kryteria: .pipeline/requirement.md
+Wklej jego raport bez zmian.

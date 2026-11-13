@@ -1,0 +1,43 @@
+diff --git a/backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java b/backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java
+index f782cb2..88d650e 100644
+--- a/backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java
++++ b/backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java
+@@ -167,10 +167,7 @@ public class BillingRulesEngine {
+     }
+ 
+     private BigDecimal applyAdjustments(String procedureCode, BigDecimal base, PricingContext context) {
+-        String family = PROCEDURE_FAMILIES.get(procedureCode);
+-        if (family == null) {
+-            family = deriveFamilyFromCode(procedureCode);
+-        }
++        String family = resolveFamily(procedureCode);
+ 
+         BigDecimal adjusted = base;
+ 
+@@ -414,10 +411,7 @@ public class BillingRulesEngine {
+     }
+ 
+     private BigDecimal applyTax(String procedureCode, BigDecimal amount, PricingContext context) {
+-        String family = PROCEDURE_FAMILIES.get(procedureCode);
+-        if (family == null) {
+-            family = deriveFamilyFromCode(procedureCode);
+-        }
++        String family = resolveFamily(procedureCode);
+ 
+         BigDecimal taxRate = BigDecimal.ZERO;
+ 
+@@ -488,6 +482,14 @@ public class BillingRulesEngine {
+         return amount.setScale(2, RoundingMode.HALF_UP);
+     }
+ 
++    private String resolveFamily(String procedureCode) {
++        String family = PROCEDURE_FAMILIES.get(procedureCode);
++        if (family == null) {
++            family = deriveFamilyFromCode(procedureCode);
++        }
++        return family;
++    }
++
+     private String deriveFamilyFromCode(String procedureCode) {
+         if (procedureCode.startsWith("992")) {
+             if (procedureCode.startsWith("9920")) {
