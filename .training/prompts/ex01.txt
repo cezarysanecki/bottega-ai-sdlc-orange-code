@@ -1,0 +1,9 @@
+Co to za aplikacja, jakie ma procesy, role i technologie? Prześledź jeden proces od użytkownika do danych.
+
+Format odpowiedzi (maks. ~400 słów):
+1. Aplikacja w 2 zdaniach językiem domeny.
+2. Procesy biznesowe (lista) i role użytkowników.
+3. Technologie (tylko te potwierdzone w plikach).
+4. Jeden proces krok po kroku: ekran/endpoint -> serwis -> tabela, każdy krok z odwołaniem plik:linia.
+5. Osobno: "Niepotwierdzone / niewiadome".
+Nie zmieniaj plików.

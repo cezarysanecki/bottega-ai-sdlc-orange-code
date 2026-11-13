@@ -1,0 +1,6 @@
+# createAppointment przez GraphQL bez JWT (port 18180)
+{"data":{"createAppointment":{"id":"3","appointmentUid":"705b1be6-8998-40e5-aeef-352c89cf2308","status":"SCHEDULED","startTime":"2026-12-02T10:00+01:00"}}}
+# ta sama godzina drugi raz (kolizja lekarza)
+{"errors":[{"message":"INTERNAL_ERROR for a5faaffb-096c-ace1-7261-095bc9354603","locations":[{"line":1,"column":10}],"path":["createAppointment"],"extensions":{"classification":"INTERNAL_ERROR"}}],"data":null}
+# REST bez JWT
+403

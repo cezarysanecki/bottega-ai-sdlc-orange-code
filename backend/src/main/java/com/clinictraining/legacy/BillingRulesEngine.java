@@ -108,6 +108,7 @@ public class BillingRulesEngine {
             log.warn("Empty procedure code provided");
             return BigDecimal.ZERO;
         }
+        procedureCode = procedureCode.trim();
 
         BigDecimal baseCharge = resolveBaseCharge(procedureCode);
 

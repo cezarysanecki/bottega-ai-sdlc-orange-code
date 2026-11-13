@@ -1,0 +1,1 @@
+Bez używania narzędzi: jakim poleceniem uruchomię tylko testy BillingRulesEngineTest i co trzeba mieć, żeby przeszły testy PaymentServiceIT? Skąd to wiesz? Odpowiedz w 3 zdaniach.

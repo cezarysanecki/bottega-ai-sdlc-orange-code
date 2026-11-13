@@ -1,0 +1,257 @@
+{
+ "wall_sec": 65,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.{md,json,xml,gradle,kts,yml,yaml,properties,toml,py,ts,tsx,js,java,kt,go,cs,sql,html,vue,rb,php}"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/README.md"
+   }
+  },
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "backend/src/main/java/**/*.java"
+   }
+  },
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "frontend/med-frontend/{package.json,src/**/*.{ts,tsx}}"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main/java/com/clinictraining/medbackend/web/AppointmentController.java"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main/java/com/clinictraining/appointment/AppointmentService.java"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main/java/com/clinictraining/medbackend/security/SecurityConfig.java"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/frontend/med-frontend/src/app/routes.tsx"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "api/appointments|mutate|createAppointment|post\\(",
+    "path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/frontend/med-frontend/src",
+    "output_mode": "content"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "@Table|@Column\\(name|@JoinColumn|@Embedded|@AttributeOverride",
+    "path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main/java/com/clinictraining/appointment/model",
+    "output_mode": "content"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "(?i)role|authorit|hasRole|PreAuthorize",
+    "path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main",
+    "output_mode": "content",
+    "head_limit": 40
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "<artifactId>|<version>3|<java.version>",
+    "path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/pom.xml",
+    "output_mode": "content"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/frontend/med-frontend/package.json"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/frontend/med-frontend/src/features/appointments/hooks/useBookAppointment.ts"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "bookAppointment|onFinish|handleSubmit",
+    "path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/frontend/med-frontend/src/features/appointments/BookAppointmentPage.tsx",
+    "output_mode": "content"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "createAppointment|MutationMapping|bookAppointment",
+    "path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main",
+    "output_mode": "content"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main/java/com/clinictraining/medbackend/graphql/ClinicQueryResolver.java",
+    "offset": 120,
+    "limit": 60
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/frontend/med-frontend/src/features/appointments/BookAppointmentPage.tsx",
+    "offset": 18,
+    "limit": 25
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "findOverlappingAppointments|@Query",
+    "path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main/java/com/clinictraining/appointment/repository/AppointmentRepository.java",
+    "output_mode": "content",
+    "-A": 3
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "CREATE TABLE",
+    "path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main/resources/db/migration",
+    "output_mode": "content",
+    "-i": true
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main/java/com/clinictraining/medbackend/security/JwtAuthenticationFilter.java",
+    "offset": 25,
+    "limit": 25
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "PrePersist|appointmentCode =|appointmentUid =",
+    "path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main/java/com/clinictraining/appointment/model/Appointment.java",
+    "output_mode": "content",
+    "-A": 6
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main/resources/db/migration/V8__appointment_status_history.sql"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "@Around|@AfterReturning|execution|save",
+    "path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main/java/com/clinictraining/medbackend/audit/AuditRepositoryAspect.java",
+    "output_mode": "content"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "/graphql|Authorization",
+    "path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/frontend/med-frontend/src/shared/api/graphql/client.ts",
+    "output_mode": "content"
+   }
+  },
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "{docs/*,ops/*}"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "@Table",
+    "path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main/java/com/clinictraining/medbackend/audit/AuditEvent.java",
+    "output_mode": "content"
+   }
+  }
+ ],
+ "num_turns": 28,
+ "duration_ms": 59972,
+ "total_cost_usd": 0.7708437999999999,
+ "is_error": false,
+ "usage": {
+  "input_tokens": 18,
+  "cache_creation_input_tokens": 69651,
+  "cache_read_input_tokens": 435919,
+  "output_tokens": 6319,
+  "output_tokens_details": {
+   "thinking_tokens": 292
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 69651,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1904,
+    "cache_read_input_tokens": 69227,
+    "cache_creation_input_tokens": 424,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 424
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 18,
+   "outputTokens": 6319,
+   "cacheReadInputTokens": 435919,
+   "cacheCreationInputTokens": 69651,
+   "webSearchRequests": 0,
+   "costUSD": 0.7708437999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 292,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 69651,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

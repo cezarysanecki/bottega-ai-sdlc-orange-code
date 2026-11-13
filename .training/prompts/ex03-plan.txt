@@ -1,0 +1,2 @@
+Wymaganie i kryteria są w .training/artifacts/ex03-requirement.md. Najpierw potwierdź w kodzie, czy problem istnieje (backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java).
+Przygotuj krótki plan poprawki: przyczyna, jedna minimalna zmiana, test regresji (nazwa, wejście, oczekiwanie, dlaczego zawiedzie przed poprawką), polecenie testów z CLAUDE.md i ryzyka. Nie implementuj. Max 250 słów.

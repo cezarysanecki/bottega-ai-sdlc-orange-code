@@ -1,0 +1,33 @@
+diff --git a/backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java b/backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java
+index 289d22c..9d6fb92 100644
+--- a/backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java
++++ b/backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java
+@@ -108,6 +108,7 @@ public class BillingRulesEngine {
+             log.warn("Empty procedure code provided");
+             return BigDecimal.ZERO;
+         }
++        procedureCode = procedureCode.trim();
+ 
+         BigDecimal baseCharge = resolveBaseCharge(procedureCode);
+ 
+diff --git a/backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java b/backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java
+index 49765bb..f56bedc 100644
+--- a/backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java
++++ b/backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java
+@@ -154,6 +154,16 @@ class BillingRulesEngineTest {
+         assertTrue(result.compareTo(BigDecimal.ZERO) > 0);
+     }
+ 
++    @Test
++    void shouldPriceCodeWithSurroundingWhitespaceSameAsTrimmedCode() {
++        basicContext.setServiceDateTime(ZonedDateTime.parse("2026-11-11T10:00:00Z"));
++
++        BigDecimal trimmed = billingRulesEngine.calculateCharge(LAB_CODE, basicContext);
++        BigDecimal padded = billingRulesEngine.calculateCharge(" " + LAB_CODE + " ", basicContext);
++
++        assertEquals(trimmed, padded);
++    }
++
+     @Test
+     void shouldUseProcedureRepositoryWhenAvailable() {
+         Procedure procedure = new Procedure();

@@ -155,6 +155,16 @@ class BillingRulesEngineTest {
     }
 
     @Test
+    void shouldPriceCodeWithSurroundingWhitespaceSameAsTrimmedCode() {
+        basicContext.setServiceDateTime(ZonedDateTime.parse("2026-11-11T10:00:00Z"));
+
+        BigDecimal trimmed = billingRulesEngine.calculateCharge(LAB_CODE, basicContext);
+        BigDecimal padded = billingRulesEngine.calculateCharge(" " + LAB_CODE + " ", basicContext);
+
+        assertEquals(trimmed, padded);
+    }
+
+    @Test
     void shouldUseProcedureRepositoryWhenAvailable() {
         Procedure procedure = new Procedure();
         procedure.setProcedureCode("CUSTOM-001");
