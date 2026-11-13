@@ -1,0 +1,4 @@
+Użyj subagenta reviewer. Przekaż mu wyłącznie:
+- diff: .training/evidence/ex03-diff.patch
+- wymaganie i kryteria: .training/artifacts/ex03-requirement.md
+Nie przekazuj mu własnych wniosków. Gdy wróci, wklej jego raport bez zmian, a pod nim w jednej linii napisz, czy coś z raportu wymaga sprawdzenia przez uruchomienie testów.

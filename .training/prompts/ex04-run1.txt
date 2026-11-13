@@ -1,0 +1,1 @@
+/analyze "backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java#applyAdjustments,applyDiscounts" "błędy zachowania przy wycenie procedur wywoływanej z InvoiceService"

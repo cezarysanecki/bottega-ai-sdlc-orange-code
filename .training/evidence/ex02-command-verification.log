@@ -1,0 +1,20 @@
+## default java (26)
+openjdk version "26" 2026-03-17
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.084 s -- in com.clinictraining.patient.PatientQueryServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.627 s -- in com.clinictraining.billing.InvoiceServiceTest
+[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+## JDK25 -Dtest=BillingRulesEngineTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+## JDK25 verify
+[INFO] Building jar: /Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/target/med-backend-0.0.1-SNAPSHOT.jar
+[INFO] Replacing main artifact /Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/target/med-backend-0.0.1-SNAPSHOT.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to /Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/target/med-backend-0.0.1-SNAPSHOT.jar.original
+[INFO] BUILD SUCCESS
+sec=9
+## JDK25 PaymentServiceIT (Docker/Podman)
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 14.45 s -- in com.clinictraining.integration.PaymentServiceIT
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+sec=21

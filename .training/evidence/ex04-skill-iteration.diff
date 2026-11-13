@@ -1,0 +1,13 @@
+16,17c16,18
+< 4. Nie licz wyników „na oko”. Jeśli dowód zależy od liczby, opisz, jak ją policzyć testem.
+< 5. Nie zmieniaj kodu. Zapisujesz wyłącznie `.pipeline/analysis.md` (nadpisz poprzedni).
+---
+> 4. Martwy kod jest faktem; to, jaki wynik był „zamierzony”, zwykle nie jest — wtedy dodaj pytanie i podlinkuj je w polu „Oczekiwane zachowanie”.
+> 5. Nie licz wyników „na oko”. Jeśli dowód zależy od liczby, opisz, jak ją policzyć testem.
+> 6. Nie zmieniaj kodu. Zapisujesz wyłącznie `.pipeline/analysis.md` (nadpisz poprzedni).
+27a29
+> - Oczekiwane zachowanie: <co powinno być> — źródło: wymaganie/test/dokumentacja/spójność z sąsiednim kodem; jeśli brak źródła: "nieustalone → Q-xx"
+30c32
+< - Priorytet: P1 (błędny wynik/awaria na realnej ścieżce) | P2 (realne, ale wąskie) | P3 (porządek, martwy kod)
+---
+> - Priorytet: P1 = awaria/błędny wynik osiągalny z endpointu lub joba dla danych, które system przyjmuje | P2 = osiągalne, ale wymaga danych spoza seedów/rzadkiej konfiguracji | P3 = tylko bezpośrednie wywołanie albo martwy kod

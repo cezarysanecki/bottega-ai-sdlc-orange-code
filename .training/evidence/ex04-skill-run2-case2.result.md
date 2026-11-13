@@ -1,0 +1,3 @@
+`.pipeline/analysis.md`
+F: 4, H: 2, Q: 4. Kodu nie zmieniałem i niczego nie uruchamiałem. Każdy finding ma opisany test, który go potwierdzi, ale żaden z tych testów jeszcze nie istnieje.
+Najważniejszy jest F-01 (P1): `ensureNoConflicts` odrzuca strefę czasową z żądania i podstawia strefę serwera. Gdy serwer nie działa w UTC, każda rezerwacja z frontendu sprawdza kolizje w przesuniętym oknie czasu. Skutek: ten sam lekarz może mieć dwie wizyty naraz, a wolne terminy bywają odrzucane.

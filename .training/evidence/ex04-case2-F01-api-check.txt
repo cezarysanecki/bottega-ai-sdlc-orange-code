@@ -1,0 +1,2 @@
+# istniejąca wizyta PROV-001: 2026-12-02 10:00-10:30 +01:00 (=09:00Z). Rezerwacja 09:10Z-09:20Z (ta sama chwila, inny zapis offsetu):
+{"data":{"createAppointment":{"id":"4","status":"SCHEDULED","startTime":"2026-12-02T09:10Z"}}}

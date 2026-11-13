@@ -1,0 +1,9 @@
+## bez obejścia
+(node:8153) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'setItem')
+     35|   localStorage.setItem('auth_token', 'test-token');
+     36|   localStorage.setItem('auth_user', 'test-user');
+exit=
+## z NODE_OPTIONS=--no-experimental-webstorage
+      Tests  1 passed (1)

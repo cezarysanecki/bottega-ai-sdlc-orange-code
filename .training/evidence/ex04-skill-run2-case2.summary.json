@@ -1,0 +1,201 @@
+{
+ "wall_sec": 85,
+ "tool_calls": [
+  {
+   "tool": "Bash",
+   "input": {
+    "command": "git rev-parse --short HEAD; git status --porcelain | head -5; cat -n backend/src/main/java/com/clinictraining/appointment/AppointmentService.java",
+    "description": "Get commit, status, and read service"
+   }
+  },
+  {
+   "tool": "Bash",
+   "input": {
+    "command": "cd backend/src/main/java/com/clinictraining; cat -n appointment/repository/AppointmentRepository.java appointment/model/AppointmentSlot.java shared/ClinicClock.java; grep -rn \"bookAppointment\\|ensureNoConflicts\\|isSlotAvailable\" ../../../.. ../../../../../test --include=*.java --include=*.graphqls | grep -v \"^appointment/AppointmentService.java\"",
+    "description": "Read repository, slot, clock, find callers"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "bookAppointment|ensureNoConflicts|isSlotAvailable|findOverlappingAppointments",
+    "path": "backend/src",
+    "output_mode": "content"
+   }
+  },
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "backend/src/main/java/com/clinictraining/{appointment/model,shared}/*.java"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main/java/com/clinictraining/appointment/repository/AppointmentRepository.java"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main/java/com/clinictraining/appointment/model/AppointmentSlot.java"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main/java/com/clinictraining/shared/ClinicClock.java"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main/java/com/clinictraining/medbackend/web/AppointmentController.java"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main/java/com/clinictraining/medbackend/graphql/ClinicQueryResolver.java",
+    "offset": 110,
+    "limit": 50
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "IllegalStateException|IllegalArgumentException|NullPointer|ExceptionHandler",
+    "path": "backend/src/main/java/com/clinictraining/medbackend",
+    "output_mode": "content"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "time_zone|timezone|TimeZone|ZoneId|user.timezone",
+    "path": "backend",
+    "output_mode": "content",
+    "glob": "!**/target/**"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "appointment|exclude|overlap|start_time",
+    "path": "backend/src/main/resources/db/migration",
+    "output_mode": "content",
+    "-i": true
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "(?i)conflict|kolizj|overlap|cancel|anulow|timezone|strefa|double.?book",
+    "path": "docs",
+    "output_mode": "content"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "AppointmentService|startTime|toISOString",
+    "path": ".",
+    "glob": "{backend/src/test/**,frontend/med-frontend/src/**}",
+    "output_mode": "content"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/backend/src/main/resources/db/migration/V2__core_domain.sql",
+    "offset": 49,
+    "limit": 25
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "appointmentCode|PrePersist|appointment_code",
+    "path": "backend/src/main/java/com/clinictraining/appointment/model/Appointment.java",
+    "output_mode": "content",
+    "-A": 3
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/frontend/med-frontend/src/features/appointments/BookAppointmentPage.tsx",
+    "limit": 45
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/frontend/med-frontend/src/features/appointments/hooks/useBookAppointment.ts"
+   }
+  },
+  {
+   "tool": "Write",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/.pipeline/analysis.md",
+    "content": "# Analiza: AppointmentService#bookAppointment,ensureNoConflicts\n- Cel: błędy przy rezerwacji wizyty i wykrywaniu kolizji terminów\n- Zakres: backend/src/main/java/com/clinictraining/appointment/AppointmentService.java (`bookAppointment` l. 107–145, `ensureNoConflicts` l. 147–158); commit: ca55f0e; drzewo: zmienione (tylko `.training/`, `.claude/`, `.pipeline/` — kod backendu bez zmian)\n\nWywołujący: REST `POST /api/appointments` (`medbackend/web/AppointmentController.java:54`, JWT), GraphQL `createAppointment` (`medbackend/graphql/ClinicQueryResolver.java:134`, bez JWT; używany przez frontend `features/appointments/hooks/useBookAppointment.ts`). Brak testów `AppointmentService` w `backend/src/test`.\n\n## Findings\n### F-01 Sprawdzenie kolizji gubi offset żądania i szuka w przesuniętym oknie\n- Lokalizacja: backend/src/main/java/com/clinictraining/appointment/AppointmentService.java:150-151\n- Dowód: `start.toLocalDateTime().atZone(zone)` odrzuca offset wejścia i przykleja strefę `ClinicClock` (`Clock.systemDefaultZone()`, `shared/ClinicClock.java:17`), a zapis używa oryginalnego `start`/`end` (l. 134). Frontend wysyła `toISOString()` (UTC, `Z`) — `BookAppointmentPage.tsx:30-31`. Wejście: JVM w `Europe/Warsaw` (listopad, +01:00), istnieje wizyta lekarza `10:00Z–10:30Z`; rezerwacja tego samego lekarza `10:00Z–10:30Z` → zapytanie szuka w `10:00+01:00–10:30+01:00` = `09:00Z–09:30Z` → brak kolizji → druga wizyta zapisana (double booking). Odwrotnie: rezerwacja `11:00Z–11:30Z` (wolny termin) → okno `10:00Z–10:30Z` → fałszywa kolizja i odrzucenie.\n- Oczekiwane zachowanie: porównanie tych samych chwil, które są zapisywane (kolumny `TIMESTAMP WITH TIME ZONE`, `V2__core_domain.sql:62-63`) — źródło: spójność z zapisem w l. 134 i z zapytaniem `findOverlappingAppointments`, które porównuje chwile.\n- Skutek: dwie wizyty u jednego lekarza w tym samym czasie albo odrzucenie wolnego terminu; przesunięcie = różnica między offsetem klienta a strefą serwera.\n- Osiągalność: GraphQL `createAppointment` z frontendu i REST `POST /api/appointments`; ten sam wzorzec w `isSlotAvailable` (l. 100-101) → `GET /api/appointments/check-availability` i `rescheduleAppointment`.\n- Priorytet: P1 (każda rezerwacja z frontendu, gdy strefa JVM ≠ UTC; przy JVM w UTC i wejściu w `Z` błąd nie występuje)\n- Weryfikacja: `shouldDetectConflictWhenRequestOffsetDiffersFromClinicZone` — `ClinicClock(Clock.fixed(..., ZoneId.of(\"Europe/Warsaw\")))`, mock repozytorium; wywołanie `bookAppointment(..., 2026-11-20T10:00Z, 2026-11-20T10:30Z, null)`; oczekiwanie: `findOverlappingAppointments` wywołane z argumentami równymi (`isEqual`) `10:00Z` i `10:30Z` (dziś dostaje `09:00Z`/`09:30Z`). Wariant IT (Testcontainers): zapisz wizytę 10:00Z, druga rezerwacja tego samego slotu → oczekiwany `IllegalStateException`.\n\n### F-02 Odwołane wizyty nadal blokują termin\n- Lokalizacja: backend/src/main/java/com/clinictraining/appointment/repository/AppointmentRepository.java:21 (wołane z AppointmentService.java:153)\n- Dowód: zapytanie filtruje tylko po `provider.id` i nakładaniu się czasu, bez `status`. Wejście: wizyta `10:00–10:30` → `PATCH /api/appointments/{id}/cancel` (status `CANCELLED`, `AppointmentService.java:176`) → ponowna rezerwacja `10:00–10:30` u tego lekarza → `IllegalStateException(\"Conflicting appointment detected\")`.\n- Oczekiwane zachowanie: nieustalone → Q-01 (sąsiedni kod traktuje tylko `SCHEDULED` jako aktywne, np. `listUpcomingAppointments` l. 62, ale brak wymagania).\n- Skutek: termin po odwołaniu jest trwale niedostępny; `check-availability` też zwraca `available: false`.\n- Osiągalność: cancel przez REST, rezerwacja przez GraphQL/REST.\n- Priorytet: P1 (jeśli Q-01 potwierdzi, że odwołanie zwalnia termin)\n- Weryfikacja: IT `shouldAllowBookingSlotOfCancelledAppointment` — zarezerwuj, odwołaj, zarezerwuj ten sam slot; oczekiwanie: druga rezerwacja zapisana.\n\n### F-03 Brak walidacji przedziału czasu w REST; odwrócony przedział omija detekcję kolizji\n- Lokalizacja: backend/src/main/java/com/clinictraining/appointment/AppointmentService.java:125,134 (walidacja tylko w `ClinicQueryResolver.java:131`)\n- Dowód: `bookAppointment` nie sprawdza `start < end`. Przez REST: `start=11:00`, `end=10:00` przy istniejącej wizycie `10:00–11:00` → warunek `a.start < :end AND a.end > :start` = `10:00 < 10:00` → fałsz → brak kolizji → zapis slotu z `end < start`. GraphQL odrzuca `end < start`, ale przepuszcza `end == start` (slot zerowej długości). `start == null` lub `end == null` (pola nieobowiązkowe w DTO) → `NullPointerException` w l. 150 → HTTP 500 (brak `@ExceptionHandler` w `medbackend`).\n- Oczekiwane zachowanie: odrzucenie `end <= start` i braku czasu jako błąd wejścia — źródło: spójność z walidacją w `ClinicQueryResolver.java:131-133`; czy `end == start` jest dopuszczalne: nieustalone → Q-02.\n- Skutek: w bazie wizyty z ujemnym czasem trwania, nakładające się na inne; brak komunikatu dla klienta.\n- Osiągalność: REST `POST /api/appointments` (z JWT); `end == start` także przez GraphQL.\n- Priorytet: P2 (wymaga ręcznie spreparowanego żądania; frontend RangePicker wymusza kolejność)\n- Weryfikacja: `shouldRejectBookingWhenEndBeforeStart` — `bookAppointment(..., 11:00Z, 10:00Z, null)`; oczekiwanie: `IllegalArgumentException`, `save` nie wywołane.\n\n### F-04 Nieznany typ wizyty i nieznany gabinet są po cichu zastępowane\n- Lokalizacja: backend/src/main/java/com/clinictraining/appointment/AppointmentService.java:118-123\n- Dowód: `appointmentTypeCode=\"TYPO\"` → `orElseGet(... \"CHECKUP\")` → wizyta zapisana jako CHECKUP. `roomCode=\"R-999\"` (nieistniejący) → `orElse(null)` → wizyta bez gabinetu. `rescheduleAppointment` dla tego samego przypadku rzuca `IllegalArgumentException(\"Room not found\")` (l. 238-239).\n- Oczekiwane zachowanie: nieustalone → Q-03 (komentarz l. 123 sugeruje celowość dla telehealth, ale niespójne z `rescheduleAppointment`).\n- Skutek: błędny typ wizyty (wpływa na dalszy encounter/fakturę) lub brak gabinetu bez informacji dla użytkownika.\n- Osiągalność: GraphQL/REST z dowolnym kodem typu/gabinetu.\n- Priorytet: P2\n- Weryfikacja: `shouldRejectUnknownAppointmentType` — mock `findByTypeCode(\"TYPO\")` → empty; oczekiwanie (po Q-03): wyjątek zamiast zapisu z CHECKUP.\n\n## Hipotezy\n- H-01 Wyścig check-then-insert: dwie równoległe rezerwacje tego samego slotu przejdą `ensureNoConflicts` i obie się zapiszą (domyślna izolacja READ COMMITTED, brak blokady i brak constraintu `EXCLUDE` w migracjach). Brakuje: testu współbieżnego na PostgreSQL potwierdzającego oba zapisy.\n- H-02 Kolizja zgłaszana jako `IllegalStateException` bez handlera kończy się HTTP 500 zamiast 409 (REST) i ogólnym błędem w GraphQL. Brakuje: uruchomienia endpointu i sprawdzenia statusu/treści odpowiedzi.\n\n## Pytania\n- Q-01 Czy wizyty `CANCELLED` (i ewentualnie `NO_SHOW`) mają zwalniać termin lekarza? Które statusy liczą się jako kolizja?\n- Q-02 Czy wizyta z `end == start` jest dopuszczalna? Czy jest minimalna/maksymalna długość wizyty?\n- Q-03 Czy nieznany `appointmentType`/`roomCode` ma być błędem (jak w `rescheduleAppointment`), czy fallback do CHECKUP / brak gabinetu jest zamierzony?\n- Q-04 Czy kolizje mają obejmować też gabinet (dwóch lekarzy w jednym `roomCode`) i pacjenta (dwie wizyty pacjenta naraz)? Dziś sprawdzany jest tylko lekarz.\n\n## Poza zakresem\n- `rescheduleAppointment` (l. 230): `isSlotAvailable` nie wyklucza samej przesuwanej wizyty → przesunięcie o np. 15 min nakładające się na własny stary termin jest odrzucane.\n- `isSlotAvailable` (l. 100-101) ma ten sam błąd strefy co F-01.\n- `Appointment.onCreate` używa `ZonedDateTime.now()` zamiast `ClinicClock`.\n"
+   }
+  }
+ ],
+ "num_turns": 20,
+ "duration_ms": 80946,
+ "total_cost_usd": 0.4578044,
+ "is_error": false,
+ "usage": {
+  "input_tokens": 20,
+  "cache_creation_input_tokens": 31157,
+  "cache_read_input_tokens": 220042,
+  "output_tokens": 8223,
+  "output_tokens_details": {
+   "thinking_tokens": 1319
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 31157,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 282,
+    "cache_read_input_tokens": 33394,
+    "cache_creation_input_tokens": 4166,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4166
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 20,
+   "outputTokens": 8223,
+   "cacheReadInputTokens": 220042,
+   "cacheCreationInputTokens": 31157,
+   "webSearchRequests": 0,
+   "costUSD": 0.4578044,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1319,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 31157,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

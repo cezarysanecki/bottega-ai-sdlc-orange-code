@@ -1,0 +1,1 @@
+/analyze "backend/src/main/java/com/clinictraining/appointment/AppointmentService.java#bookAppointment,ensureNoConflicts" "błędy przy rezerwacji wizyty i wykrywaniu kolizji terminów"

@@ -1,0 +1,2 @@
+jshell> 8 8
+jshell> Wynik: długość po trim()=8, po strip()=8 dla " LAB-CBC" (8 znaków). RH-01 potwierdzona (trim nie usuwa NBSP), ale proponowane przez reviewera strip() też NBSP nie usuwa (Character.isWhitespace wyklucza NBSP).

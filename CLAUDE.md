@@ -12,14 +12,14 @@ Aplikacja szkoleniowa przychodni: pacjent rezerwuje wizytę u lekarza (stacjonar
 
 ## Polecenia (sprawdzone 2026-11-13)
 Backend, katalog `backend/`, JDK 22–26 (sprawdzone 25 i 26):
-- `./mvnw -B test` – testy jednostkowe (19). Nie uruchamia klas `*IT`.
+- `./mvnw -B test` – testy jednostkowe. Nie uruchamia klas `*IT`.
 - `./mvnw -B -Dtest=BillingRulesEngineTest test` – jedna klasa testów.
 - `./mvnw -B -Dtest=PaymentServiceIT test` – testy integracyjne, wymagają działającego Dockera/Podmana (Testcontainers).
 - `./mvnw -B spring-boot:run -Dspring-boot.run.profiles=demo -DskipTests` – backend z wbudowanym PostgreSQL na 8080; inny port: dodaj `-Dspring-boot.run.arguments=--server.port=18180`.
 
 Frontend, katalog `frontend/med-frontend/`, Node 18+:
 - `npm ci --no-audit --no-fund`, `npm run build`, `npm run lint` (obecnie 0 błędów, 13 ostrzeżeń).
-- `npm test -- --run` – Vitest jednorazowo. Na Node 25+ dodaj `NODE_OPTIONS=--no-experimental-webstorage` (kolizja globalnego localStorage z jsdom).
+- `npm test -- --run` – Vitest jednorazowo. Na Node 26 (sprawdzone) dodaj `NODE_OPTIONS=--no-experimental-webstorage` (kolizja globalnego localStorage z jsdom).
 
 ## Konwencje
 - Java: 4 spacje, bez preview API. Testy jednostkowe JUnit 5 + Mockito, nazwy `should...`.
