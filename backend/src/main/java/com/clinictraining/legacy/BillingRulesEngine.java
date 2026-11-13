@@ -283,10 +283,10 @@ public class BillingRulesEngine {
                 break;
 
             case "PROCEDURE":
-                if (context.requiresSedation()) {
+                if (Boolean.TRUE.equals(context.requiresSedation())) {
                     adjusted = adjusted.multiply(new BigDecimal("1.40"));
                 }
-                if (context.requiresAssistant()) {
+                if (Boolean.TRUE.equals(context.requiresAssistant())) {
                     adjusted = adjusted.multiply(new BigDecimal("1.20"));
                 }
                 if (context.getAnesthesiaType() != null) {
@@ -335,7 +335,7 @@ public class BillingRulesEngine {
             }
         }
 
-        if (context.hasContractedInsurance()) {
+        if (Boolean.TRUE.equals(context.hasContractedInsurance())) {
             BigDecimal insuranceDiscount = DISCOUNT_RULES.get("INSURANCE_CONTRACTED");
             if (insuranceDiscount != null) {
                 discounted = discounted.multiply(insuranceDiscount);

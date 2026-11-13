@@ -1,0 +1,76 @@
+diff --git a/.training/evidence/timeline.txt b/.training/evidence/timeline.txt
+index efd4b47..e19abc2 100644
+--- a/.training/evidence/timeline.txt
++++ b/.training/evidence/timeline.txt
+@@ -3,3 +3,4 @@
+ 2026-11-13 16:59:03 ex02 end / ex03 start
+ 2026-11-13 17:00:47 ex03 end / ex04 start
+ 2026-11-13 17:06:45 ex04 end / ex05 start
++2026-11-13 17:07:49 ex05 end / ex06 start
+diff --git a/backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java b/backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java
+index 9d6fb92..c46d7d8 100644
+--- a/backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java
++++ b/backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java
+@@ -283,10 +283,10 @@ public class BillingRulesEngine {
+                 break;
+ 
+             case "PROCEDURE":
+-                if (context.requiresSedation()) {
++                if (Boolean.TRUE.equals(context.requiresSedation())) {
+                     adjusted = adjusted.multiply(new BigDecimal("1.40"));
+                 }
+-                if (context.requiresAssistant()) {
++                if (Boolean.TRUE.equals(context.requiresAssistant())) {
+                     adjusted = adjusted.multiply(new BigDecimal("1.20"));
+                 }
+                 if (context.getAnesthesiaType() != null) {
+@@ -335,7 +335,7 @@ public class BillingRulesEngine {
+             }
+         }
+ 
+-        if (context.hasContractedInsurance()) {
++        if (Boolean.TRUE.equals(context.hasContractedInsurance())) {
+             BigDecimal insuranceDiscount = DISCOUNT_RULES.get("INSURANCE_CONTRACTED");
+             if (insuranceDiscount != null) {
+                 discounted = discounted.multiply(insuranceDiscount);
+diff --git a/backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java b/backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java
+index f56bedc..e664d01 100644
+--- a/backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java
++++ b/backend/src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java
+@@ -1,5 +1,6 @@
+ package com.clinictraining.legacy;
+ 
++import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+ import static org.junit.jupiter.api.Assertions.assertEquals;
+ import static org.junit.jupiter.api.Assertions.assertNotNull;
+ import static org.junit.jupiter.api.Assertions.assertTrue;
+@@ -164,6 +165,29 @@ class BillingRulesEngineTest {
+         assertEquals(trimmed, padded);
+     }
+ 
++    @Test
++    void shouldNotThrowForProcedureWhenSedationAndAssistantUnset() {
++        basicContext.setServiceDateTime(ZonedDateTime.parse("2026-11-11T10:00:00Z"));
++        BigDecimal expected = billingRulesEngine.calculateCharge("PROC-SUTURE", basicContext);
++
++        basicContext.setSedation(null);
++        basicContext.setAssistant(null);
++        BigDecimal actual = assertDoesNotThrow(() -> billingRulesEngine.calculateCharge("PROC-SUTURE", basicContext));
++
++        assertEquals(expected, actual);
++    }
++
++    @Test
++    void shouldTreatMissingContractedInsuranceAsFalse() {
++        basicContext.setServiceDateTime(ZonedDateTime.parse("2026-11-11T10:00:00Z"));
++        BigDecimal expected = billingRulesEngine.calculateCharge(OFFICE_VISIT_CODE, basicContext);
++
++        basicContext.setContractedInsurance(null);
++        BigDecimal actual = assertDoesNotThrow(() -> billingRulesEngine.calculateCharge(OFFICE_VISIT_CODE, basicContext));
++
++        assertEquals(expected, actual);
++    }
++
+     @Test
+     void shouldUseProcedureRepositoryWhenAvailable() {
+         Procedure procedure = new Procedure();

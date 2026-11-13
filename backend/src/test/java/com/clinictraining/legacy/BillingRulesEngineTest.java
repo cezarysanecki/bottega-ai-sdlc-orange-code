@@ -1,5 +1,6 @@
 package com.clinictraining.legacy;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -162,6 +163,29 @@ class BillingRulesEngineTest {
         BigDecimal padded = billingRulesEngine.calculateCharge(" " + LAB_CODE + " ", basicContext);
 
         assertEquals(trimmed, padded);
+    }
+
+    @Test
+    void shouldNotThrowForProcedureWhenSedationAndAssistantUnset() {
+        basicContext.setServiceDateTime(ZonedDateTime.parse("2026-11-11T10:00:00Z"));
+        BigDecimal expected = billingRulesEngine.calculateCharge("PROC-SUTURE", basicContext);
+
+        basicContext.setSedation(null);
+        basicContext.setAssistant(null);
+        BigDecimal actual = assertDoesNotThrow(() -> billingRulesEngine.calculateCharge("PROC-SUTURE", basicContext));
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldTreatMissingContractedInsuranceAsFalse() {
+        basicContext.setServiceDateTime(ZonedDateTime.parse("2026-11-11T10:00:00Z"));
+        BigDecimal expected = billingRulesEngine.calculateCharge(OFFICE_VISIT_CODE, basicContext);
+
+        basicContext.setContractedInsurance(null);
+        BigDecimal actual = assertDoesNotThrow(() -> billingRulesEngine.calculateCharge(OFFICE_VISIT_CODE, basicContext));
+
+        assertEquals(expected, actual);
     }
 
     @Test

@@ -1,0 +1,124 @@
+{
+ "wall_sec": 93,
+ "tool_calls": [
+  {
+   "tool": "Bash",
+   "input": {
+    "command": "git rev-parse --short HEAD; git status --porcelain; grep -n \"\" backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java",
+    "description": "Get commit, tree status, and engine source"
+   }
+  },
+  {
+   "tool": "Bash",
+   "input": {
+    "command": "cd backend; grep -rn \"calculateCharge\\|PricingContext\\|legacyBillingAdjuster\" src --include=*.java --include=*.groovy --include=*.xml --include=*.yml --include=*.properties | grep -v \"legacy/BillingRulesEngine.java\"; ls src/test/java/com/clinictraining/legacy/ 2>/dev/null; ls src/main/resources/db/migration",
+    "description": "Find callers, tests, migrations"
+   }
+  },
+  {
+   "tool": "Bash",
+   "input": {
+    "command": "sed -n 40,140p src/main/java/com/clinictraining/billing/InvoiceService.java; sed -n 30,70p src/test/java/com/clinictraining/legacy/BillingRulesEngineTest.java; cat src/main/resources/legacy-context.xml",
+    "description": "Read InvoiceService, test setup, legacy context"
+   }
+  },
+  {
+   "tool": "Bash",
+   "input": {
+    "command": "grep -rn \"PROC-\\|LAB-\\|TEL-\\|XR-\" src/main/resources --include=*.sql --include=*.yml --include=*.json | head -30; grep -rln \"generateInvoice\" src/main; grep -rn \"generateInvoice\" src/main/java/com/clinictraining/medbackend 2>/dev/null; grep -rn \"Procedure\\b\\|procedure\" src/main/java/com/clinictraining/medbackend/web/*.java | grep -i \"post\\|mapping\" | head",
+    "description": "Check seeds and endpoints"
+   }
+  },
+  {
+   "tool": "Bash",
+   "input": {
+    "command": "sed -n 140,155p src/main/resources/db/migration/V2__core_domain.sql; grep -rn \"procedure_code\\|INSERT INTO procedures\\|encounter_procedures\" src/main/resources/db/migration src/main/resources/seed | head; cat src/main/java/com/clinictraining/medbackend/web/ProcedureController.java | sed -n 1,80p; grep -n \"Procedure\\|procedure\" src/main/java/com/clinictraining/medbackend/bootstrap/DataBootstrapRunner.java | head -30",
+    "description": "Inspect procedure seeds and creation paths"
+   }
+  },
+  {
+   "tool": "Bash",
+   "input": {
+    "command": "sed -n 60,160p src/main/java/com/clinictraining/medbackend/bootstrap/DataBootstrapRunner.java; grep -rn \"csv\\|\\.txt\" src/main/resources --include=*.yml --include=*.properties | head; ls src/main/resources src/main/resources/seed; cat src/main/resources/scripts/BillingAdjustment.groovy",
+    "description": "Read bootstrap import and groovy script"
+   }
+  },
+  {
+   "tool": "Bash",
+   "input": {
+    "command": "cat src/main/resources/seed/encounters.csv; grep -rn \"addProcedure\\|EncounterProcedure()\" src/main/java | grep -v bootstrap; grep -n \"date_of_birth\\|insurance\" src/main/resources/seed/001_base_data.sql | head",
+    "description": "Check encounter CSV codes and procedure creation paths"
+   }
+  },
+  {
+   "tool": "Bash",
+   "input": {
+    "command": "sed -n 40,95p src/main/java/com/clinictraining/billing/EncounterService.java; grep -rn \"createEncounter\\|addProcedures\" src/main/java/com/clinictraining/medbackend | head",
+    "description": "Check encounter procedure endpoint path"
+   }
+  },
+  {
+   "tool": "Write",
+   "input": {
+    "file_path": "/Users/cezarysanecki/orca/workspaces/training-ai-sdlc-orange-demo-app/orange-proba-13-cwiczen-cc/.pipeline/analysis.md",
+    "content": "# Analiza: BillingRulesEngine#applyAdjustments, applyDiscounts\n- Cel: błędy zachowania przy wycenie procedur wywoływanej z InvoiceService\n- Zakres: backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java — `applyAdjustments` (l. 166–312), `applyDiscounts` (l. 314–361); commit: 19cd052; drzewo: zmienione (pliki szkoleniowe/pipeline poza `backend/`, kod w zakresie niezmieniony)\n\nKontekst wywołań: `InvoiceService.generateInvoice` (l. 43) ← `BillingController` (l. 83, REST), `ClinicQueryResolver.generateInvoice` (l. 146, GraphQL), `DataBootstrapRunner` (l. 152, start aplikacji). `InvoiceService.buildPricingContext` (l. 93–112) ustawia wyłącznie: `serviceDateTime`, `patientAge`, `state`, `selfPay`, `contractedInsurance`. Wszystkie pozostałe pola `PricingContext` są `null`. Procedury w DB z seedów: `XR-101`, `TEL-200`, `GEN-001` (V2__core_domain.sql:147); `EncounterService.addProcedures` przyjmuje tylko kody istniejące w tabeli `procedures`, a API nie ma endpointu tworzenia procedur.\n\n## Findings\n### F-01 NPE dla rodziny PROCEDURE przy kontekście z InvoiceService\n- Lokalizacja: backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java:286, :289\n- Dowód: `if (context.requiresSedation())` / `if (context.requiresAssistant())` — metody zwracają `Boolean` (l. 581, 584), auto-unboxing `null` → `NullPointerException`. `InvoiceService.buildPricingContext` nigdy nie ustawia `sedation`/`assistant`. Wejście: encounter z procedurą `PROC-SUTURE` (lub dowolny kod z prefiksem `PROC`, rodzina z `deriveFamilyFromCode`, l. 501) i `overrideCost == null` → `calculateCharge` rzuca NPE → `generateInvoice` kończy się wyjątkiem, faktura nie powstaje.\n- Oczekiwane zachowanie: brak flagi = brak dopłaty (jak `false`) — źródło: spójność z sąsiednim kodem; wszystkie inne flagi w obu metodach są czytane przez `Boolean.TRUE.equals(...)` (l. 176, 223, 226, 238, 244, 247, 324, 331).\n- Skutek: błąd 500 z REST/GraphQL przy generowaniu faktury dla encountera z procedurą zabiegową; w bootstrapie faktura cicho pominięta (catch, l. 153).\n- Osiągalność: `BillingController` / `ClinicQueryResolver` → `InvoiceService.generateInvoice` → `calculateCharge` → `applyAdjustments`. Wymaga procedury z kodem `PROC*` w tabeli `procedures` — brak w seedach i brak endpointu jej tworzenia (możliwa przez wpis w DB lub `encounters.csv`, `DataBootstrapRunner` l. 126–133 tworzy brakujące procedury).\n- Priorytet: P2\n- Weryfikacja: `BillingRulesEngineTest.shouldNotThrowForProcedureWhenSedationAndAssistantUnset` — `new PricingContext()` z ustawionymi tylko polami jak w `buildPricingContext` (`contractedInsurance=false`, `selfPay=true`, `state=\"CA\"`), kod `PROC-SUTURE` → oczekiwanie: brak wyjątku i wynik równy wynikowi dla `sedation=false, assistant=false`. Uwaga: obecny `setUp` testów ustawia `sedation/assistant=false` (l. 58–59), co maskuje błąd.\n\n### F-02 NPE w applyDiscounts, gdy `contractedInsurance` nie jest ustawione\n- Lokalizacja: backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java:338\n- Dowód: `if (context.hasContractedInsurance())` — `Boolean` (l. 599) unboxowany bez null-checku. Wejście: `calculateCharge(\"99213\", new PricingContext())` → NPE.\n- Oczekiwane zachowanie: `null` traktowane jak `false` — źródło: spójność z l. 324 i 331 (`Boolean.TRUE.equals`).\n- Skutek: wyjątek zamiast kwoty dla każdego wywołującego, który nie ustawi pola.\n- Osiągalność: tylko bezpośrednie wywołanie — `InvoiceService` zawsze ustawia pole (l. 109).\n- Priorytet: P3\n- Weryfikacja: `shouldTreatMissingContractedInsuranceAsFalse` — `new PricingContext()`, kod `99213` → brak wyjątku, wynik równy wynikowi z `contractedInsurance=false`.\n\n### F-03 Próg panelu laboratoryjnego ≥10 nieosiągalny\n- Lokalizacja: backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java:252–255\n- Dowód: `if (panelSize >= 5) ... else if (panelSize >= 10)` — każda wartość ≥10 spełnia już pierwszy warunek; gałąź 0.85 to martwy kod. Wejście: `LAB-CBC`, `labPanelSize=12` → mnożnik 0.90 (jak dla 5).\n- Oczekiwane zachowanie: nieustalone → Q-01\n- Skutek: duże panele wyceniane jak średnie (jeśli intencją był wyższy rabat).\n- Osiągalność: tylko bezpośrednie wywołanie — `InvoiceService` nie ustawia `labPanelSize`.\n- Priorytet: P3\n- Weryfikacja: `shouldApplyLargerPanelAdjustmentForTenOrMoreTests` — porównać wynik dla `labPanelSize=5` i `labPanelSize=10` (pozostałe pola identyczne); dziś wyniki są równe.\n\n### F-04 Próg telehealth >60 min nieosiągalny\n- Lokalizacja: backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java:277–280\n- Dowód: `else if (minutes > 45) ... else if (minutes > 60)` — każda wartość >60 spełnia już `> 45`; mnożnik 1.50 to martwy kod. Wejście: `TEL-CONSULT`, `duration=90` → mnożnik 1.25.\n- Oczekiwane zachowanie: nieustalone → Q-01\n- Skutek: długie konsultacje telehealth wyceniane jak 46-minutowe.\n- Osiągalność: tylko bezpośrednie wywołanie — `InvoiceService` nie ustawia `duration` (ani `telehealthPlatform`), więc dla `TEL-200` z seedów cała gałąź TELEHEALTH jest bez efektu.\n- Priorytet: P3\n- Weryfikacja: `shouldApplyLongSessionAdjustmentAboveSixtyMinutes` — porównać wynik dla `duration=50` i `duration=90`; dziś są równe.\n\n### F-05 Rabat BULK_LAB pomija kody LAB spoza tabeli statycznej\n- Lokalizacja: backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java:345–346\n- Dowód: `applyDiscounts` bierze rodzinę tylko z `PROCEDURE_FAMILIES.get(procedureCode)`, bez fallbacku `deriveFamilyFromCode`, którego używają `applyAdjustments` (l. 168–170) i `applyTax` (l. 415–417). Wejście: kod `LAB-HBA1C` (z DB), `labPanelSize=6` → `applyAdjustments` stosuje 0.90 jako LABORATORY, `applyDiscounts` nie stosuje 0.85 (rodzina `null`); dla `LAB-CBC` przy tych samych danych oba mnożniki działają.\n- Oczekiwane zachowanie: ta sama rodzina co w `applyAdjustments`/`applyTax` — źródło: spójność z sąsiednim kodem (o ile podwójny rabat jest zamierzony, zob. H-01).\n- Skutek: różna cena dla dwóch procedur laboratoryjnych przy tych samych danych.\n- Osiągalność: tylko bezpośrednie wywołanie — `InvoiceService` nie ustawia `labPanelSize`.\n- Priorytet: P3\n- Weryfikacja: `shouldApplyBulkLabDiscountForDerivedLabFamily` — mock `procedureRepository.findByProcedureCode(\"LAB-HBA1C\")` z `defaultCost=35.00`, porównać z `LAB-CBC` (35.00) przy `labPanelSize=6` → oczekiwanie: równe kwoty.\n\n### F-06 Rabat procentowy bez walidacji zakresu\n- Lokalizacja: backend/src/main/java/com/clinictraining/legacy/BillingRulesEngine.java:353–358\n- Dowód: mnożnik `1 - p/100` bez ograniczeń. Wejście: `customDiscountPercent=150`, `99213` → mnożnik −0.5 → ujemna kwota przed podatkiem; `customDiscountPercent=-20` → narzut 1.2.\n- Oczekiwane zachowanie: nieustalone → Q-02\n- Skutek: możliwa ujemna pozycja faktury.\n- Osiągalność: tylko bezpośrednie wywołanie — `InvoiceService` nie ustawia `customDiscountPercent`.\n- Priorytet: P3\n- Weryfikacja: `shouldRejectOrClampCustomDiscountOutsideZeroToHundred` — `customDiscountPercent=150` → oczekiwanie wg decyzji z Q-02 (wyjątek albo kwota ≥ 0).\n\n## Hipotezy\n- H-01 Podwójne naliczanie dla laboratorium: `labPanelSize>=5` daje 0.90 w `applyAdjustments` (l. 252) i 0.85 BULK_LAB w `applyDiscounts` (l. 346); `statOrder` daje 1.40 w `applyAdjustments` (l. 244) i 1.40 STAT_LAB w `applySurcharges` (l. 400–406). Brakuje wymagania, czy to dwie osobne reguły, czy duplikat (→ Q-03). Dziś nieosiągalne z `InvoiceService`.\n- H-02 Każdy pacjent z dowolnym planem ubezpieczeniowym dostaje rabat INSURANCE_CONTRACTED 0.80, bo `InvoiceService` (l. 109–110) mapuje `insurancePlan != null` na „contracted”; senior z ubezpieczeniem dostaje 0.90×0.80. Osiągalne z seedów (PAT z planami PPO-BETA/HMO-ALPHA). Brakuje informacji, czy wszystkie plany są kontraktowane i czy rabaty mają się kumulować (→ Q-04). Przyczyna leży w `InvoiceService`, nie w `applyDiscounts`.\n\n## Pytania\n- Q-01 Czy progi `labPanelSize>=10` → 0.85 i `duration>60` → 1.50 mają obowiązywać (wtedy kolejność warunków jest błędem), czy gałęzie należy usunąć?\n- Q-02 Jaki dopuszczalny zakres `customDiscountPercent` (0–100?) i co przy wartości spoza zakresu: wyjątek czy obcięcie?\n- Q-03 Czy rabat za duży panel i dopłata STAT dla laboratorium mają być naliczane raz czy dwukrotnie (adjustment + discount/surcharge)?\n- Q-04 Czy każdy plan ubezpieczeniowy oznacza kontrakt (rabat 20%) i czy rabaty SENIOR/EMPLOYEE/INSURANCE mają się kumulować multiplikatywnie, czy obowiązuje najwyższy?\n\n## Poza zakresem\n- `applyLegacyScript` (l. 465–482): skrypt Groovy ma `adjust(BigDecimal)`, a wywołanie przekazuje 3 argumenty → wyjątek połykany, zawsze fallback `+12.34`; dodatkowo `adjusted.getClass()` przy `null` (l. 475) → NPE połykany.\n- `InvoiceService.calculateAge` liczy wiek względem `LocalDate.now()`, nie daty usługi — wpływa na rabat SENIOR przy fakturowaniu wstecz.\n- `InvoiceService`: `setLegacyTaxCents(183)` na sztywno; `balanceCents` przez `intValue()` obcina grosze.\n- `applySurcharges`: `hour > 18` nie obejmuje 18:xx jako po godzinach (do weryfikacji wymagań).\n- `applyAdjustments`: nieznane wartości `complexityLevel`/`telehealthPlatform`/`anesthesiaType` są cicho ignorowane (brak `default`).\n"
+   }
+  }
+ ],
+ "num_turns": 10,
+ "duration_ms": 88225,
+ "total_cost_usd": 0.5099414,
+ "is_error": false,
+ "usage": {
+  "input_tokens": 20,
+  "cache_creation_input_tokens": 35681,
+  "cache_read_input_tokens": 261367,
+  "output_tokens": 8607,
+  "output_tokens_details": {
+   "thinking_tokens": 1890
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 35681,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 182,
+    "cache_read_input_tokens": 35782,
+    "cache_creation_input_tokens": 6302,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 6302
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 20,
+   "outputTokens": 8607,
+   "cacheReadInputTokens": 261367,
+   "cacheCreationInputTokens": 35681,
+   "webSearchRequests": 0,
+   "costUSD": 0.5099414,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1890,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 35681,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}
