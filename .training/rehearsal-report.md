@@ -136,11 +136,67 @@ Pierwsze podejście do ćw. 11–12 przerwał limit sesji (dowody `*-try1-limit.
 - W nieufanym workspace `permissions.allow` z `.claude/settings.json` jest ignorowane, a hooki projektu się wykonują. Zaufanie jest zapisane dla ścieżki głównego repo w `~/.claude.json`, którego nie zmieniałem. Uprawnienia dla skilli trzeba dawać przez `allowed-tools` w skillu, a w headless przez `--allowedTools`.
 - Reguły ścieżek dla zapisu działają jako `Edit(...)`. Reguła `Write(...)` nie zadziałała.
 
+## Czas próby (agent)
+Ćw. 1–10 razem z inwentarzem zajęły 16:53–17:26, ćw. 11–13 zajęły 19:01 do ok. 19:35. Pomiędzy była przerwa na limit sesji.
+Świeże sesje `claude -p` to łącznie ok. 21 min pracy modelu i ok. $8.9 według CLI. Kosztu głównej sesji nie mierzyłem.
+To nie jest czas grupy.
+
+## Zgodność z programem Bottegi
+Źródło: https://bottega.com.pl/szkolenie-AI-Assisted-SDLC, sprawdzone 2026-11-13. Strona podaje: „2 dni”, „60% praktyki / 40% teorii”, program jako ramę ustalaną z grupą. W terminie otwartym zajęcia trwają 9–17.
+Wymóg: 2 × 405 min = 810 min zajęć, z czego 60% to 486 min praktyki uczestników.
+
+### Szacunek dla grupy (SZACUNEK, nie pomiar)
+„Praktyka” to aktywna praca uczestnika: pisanie promptów, sprawdzanie wyników, testy, poprawki. Czas oczekiwania na model zmierzyłem w próbie i podaję go osobno.
+
+| Blok | Ćwiczenia | Teoria/omówienie | Praktyka | w tym oczekiwanie na model (zmierzone w próbie) |
+|---|---|---|---|---|
+| D1 B1 (105) | mapa SDLC, demo, ćw. 1 | 70 | 35 | ~1 min |
+| D1 B2 (105) | ćw. 2 CLAUDE.md | 45 | 60 | <1 min (+ ~1 min mvnw) |
+| D1 B3 (105) | ćw. 3 Plan Mode + bugfix | 35 | 70 | ~1 min |
+| D1 B4 (90) | ćw. 4 skill, ćw. 5 reviewer | 25 | 65 | ~4 min |
+| D2 B1 (105) | recap, ćw. 6 pipeline, ćw. 7 LSP, ćw. 8 MCP | 25 | 80 | ~6 min (+ indeksowanie jdtls) |
+| D2 B2 (105) | ćw. 9 hook + Checkstyle | 35 | 70 | <1 min (+ 5–8 s hooka na edycję) |
+| D2 B3 (105) | ćw. 10 workflow, ćw. 11 standardy, ćw. 12 handoff | 20 | 85 | ~10 min |
+| D2 B4 (90) | ćw. 13 Maister + porównanie | 40 | 50 | ~4 min |
+| **Razem** | | **295** | **515** (63,6%) | **~28 min** |
+
+- 515 min to więcej niż wymagane 486, ale zapas wynosi tylko 29 min. Po odjęciu czasu oczekiwania na model zostaje ~487 min, czyli na granicy wymogu.
+- Dzień 1 ma 230 min praktyki (57%). Wymóg spełnia dopiero dzień 2: 285 min (70%).
+- Największe ryzyka:
+  - pierwsze pobranie zależności Maven (2–5 min);
+  - instalacja jdtls;
+  - port 8080 (frontend ma zaszyty adres);
+  - Node 26 wymaga obejścia;
+  - Docker dla testów `*IT`.
+
+  Każde z nich może zjeść zapas, dlatego potrzebny jest wcześniejszy setup: JDK, Docker, `npm ci`, jdtls i jeden przebieg `./mvnw -B test`.
+
+### Uproszczenia, żeby zmieścić się w blokach
+- **Ćw. 11:** pary zamiast dwóch sesji na osobę. Połowa grupy robi wariant A, połowa B, na tej samej bazie i z tym samym promptem. Porównanie robimy na forum. Oszczędza to ok. 15 min i od razu daje więcej niż jedną parę prób.
+- **Ćw. 7 i 8:** jdtls i `.mcp.json` przygotowane wcześniej. Na zajęciach tylko jedno wywołanie LSP i jedno pytanie do Context7.
+- **Ćw. 6:** kontrakt skilla `analyze` z ćw. 4 używany bez zmian, bez kolejnej iteracji.
+- **Ćw. 13:** tylko `/maister:quick-bugfix` na jednym zgłoszeniu, bez `/maister:init` i bez `development`. Cięższe warianty prowadzący pokazuje jako demo.
+
+### Rozbieżności z ramą programu
+- **Ćwiczenia wykraczają poza ramę:** LSP, hooki, skille i Maister nie występują w ramie (Maister jest w osobnym programie „AI-SDLC - Claude + Maister”). Wymaga to uzgodnienia w analizie przed szkoleniem.
+- **Punkty ramy bez osobnego ćwiczenia:**
+  - @notation;
+  - Context poisoning;
+  - Context Window Management;
+  - STATUS.md (częściowo pokrywa go handoff z ćw. 12);
+  - Todo Lists;
+  - Batch operations;
+  - Version control z AI;
+  - Effective Prompting;
+  - kultura zespołu.
+
+  Większość można wpleść w omówienia. Version control i @notation warto wpleść w ćw. 3 i 6, np. commit z opisem przez Claude i odwołania `@plik` w promptach.
+
 ## Rekomendacje i uproszczenia
 - Wspólny scenariusz: BillingRulesEngine (W-01 → F-01/F-02 → R-02) daje czytelne red/green w kilka minut. Przypadek „podwójna rezerwacja przez offset” warto mieć jako bardziej realistyczny wariant P1.
 - Dzień 2, blok 1: LSP przez lokalny jdtls trzeba przygotować przed szkoleniem, bo pobranie i indeksowanie trwa. Najlepiej przygotować skrypt instalacyjny. Context7 pokazać jako MCP do dokumentacji, z uczciwym brakiem pokrycia.
 - Hook dokłada ~5–8 s do każdej edycji Javy (mvnw). Dla grupy wystarczy jedna reguła.
-- Nie zweryfikowano strony Bottegi (60% praktyki) ani bilansu 486 minut. Brak pomiarów czasu pracy uczestników: czasy powyżej to czas modelu.
+- Czasy grupy to szacunki; pomiar wymaga próby z ludźmi.
 - Prowadzący musi przećwiczyć z człowiekiem: interaktywny Plan Mode i zatwierdzanie planu, dialog zaufania workspace, Maister w sesji interaktywnej i `/maister:init`.
 - W headless `CLAUDE_CODE_PLUGIN_DIRS` z otoczenia (Orca) dokłada plugin `orca-agent-view` do każdej sesji. Na laptopach uczestników tego nie będzie.
 
