@@ -1,0 +1,1 @@
+Proces backendu demo zakończył się kodem 1, bo sam go zatrzymałem przez `kill` po sprawdzeniu pola. Nie jest to błąd uruchomienia. Wszystkie zapytania GraphQL i REST z raportu wykonałem, zanim go zatrzymałem, więc wyniki są aktualne.

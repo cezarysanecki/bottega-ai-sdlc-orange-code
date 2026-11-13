@@ -1,0 +1,7 @@
+=== B (moja weryfikacja)
+[INFO] Tests run: 108, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+npm run build exit=0
+health: {"status":"UP"}
+{"data":{"a":{"id":"3","appointmentTypeCode":"TEL_VISIT"},"b":{"id":"4","appointmentTypeCode":"CHECKUP"}}}
+[('id', 'NON_NULL'), ('appointmentUid', 'NON_NULL'), ('status', 'NON_NULL'), ('startTime', 'SCALAR'), ('endTime', 'SCALAR'), ('patient', 'NON_NULL'), ('provider', 'NON_NULL'), ('roomCode', 'SCALAR'), ('legacyNotes', 'SCALAR'), ('appointmentTypeCode', 'SCALAR')]

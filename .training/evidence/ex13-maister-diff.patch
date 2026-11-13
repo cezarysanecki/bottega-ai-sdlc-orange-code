@@ -1,0 +1,167 @@
+diff --git a/backend/src/main/java/com/clinictraining/appointment/AppointmentService.java b/backend/src/main/java/com/clinictraining/appointment/AppointmentService.java
+index 3858513..9b3b6e6 100644
+--- a/backend/src/main/java/com/clinictraining/appointment/AppointmentService.java
++++ b/backend/src/main/java/com/clinictraining/appointment/AppointmentService.java
+@@ -97,8 +97,8 @@ public class AppointmentService {
+ 
+         ZoneId zone = clinicClock.now().getZone();
+ 
+-        ZonedDateTime normalizedStart = start.toLocalDateTime().atZone(zone);
+-        ZonedDateTime normalizedEnd = end.toLocalDateTime().atZone(zone);
++        ZonedDateTime normalizedStart = start.withZoneSameInstant(zone);
++        ZonedDateTime normalizedEnd = end.withZoneSameInstant(zone);
+ 
+         var conflicts = appointmentRepository.findOverlappingAppointments(provider.getId(), normalizedStart, normalizedEnd);
+         return conflicts.isEmpty();
+@@ -147,8 +147,8 @@ public class AppointmentService {
+     private void ensureNoConflicts(com.clinictraining.patient.model.Provider provider, ZonedDateTime start, ZonedDateTime end) {
+         ZoneId zone = clinicClock.now().getZone();
+ 
+-        ZonedDateTime normalizedStart = start.toLocalDateTime().atZone(zone);
+-        ZonedDateTime normalizedEnd = end.toLocalDateTime().atZone(zone);
++        ZonedDateTime normalizedStart = start.withZoneSameInstant(zone);
++        ZonedDateTime normalizedEnd = end.withZoneSameInstant(zone);
+ 
+         var conflicts = appointmentRepository.findOverlappingAppointments(provider.getId(), normalizedStart, normalizedEnd);
+         if (!conflicts.isEmpty()) {
+diff --git a/backend/src/test/java/com/clinictraining/appointment/AppointmentServiceTest.java b/backend/src/test/java/com/clinictraining/appointment/AppointmentServiceTest.java
+new file mode 100644
+index 0000000..7922dce
+--- /dev/null
++++ b/backend/src/test/java/com/clinictraining/appointment/AppointmentServiceTest.java
+@@ -0,0 +1,135 @@
++package com.clinictraining.appointment;
++
++import static org.mockito.ArgumentMatchers.any;
++import static org.mockito.ArgumentMatchers.eq;
++import static org.mockito.Mockito.lenient;
++import static org.mockito.Mockito.never;
++import static org.mockito.Mockito.verify;
++import static org.mockito.Mockito.when;
++
++import com.clinictraining.appointment.model.Appointment;
++import com.clinictraining.appointment.model.AppointmentSlot;
++import com.clinictraining.appointment.model.AppointmentStatus;
++import com.clinictraining.appointment.model.AppointmentType;
++import com.clinictraining.appointment.repository.AppointmentRepository;
++import com.clinictraining.appointment.repository.AppointmentTypeRepository;
++import com.clinictraining.appointment.repository.RoomRepository;
++import com.clinictraining.patient.PatientQueryService;
++import com.clinictraining.patient.model.Patient;
++import com.clinictraining.patient.model.Provider;
++import com.clinictraining.patient.repository.ProviderRepository;
++import com.clinictraining.shared.ClinicClock;
++import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
++import java.time.Clock;
++import java.time.Instant;
++import java.time.ZoneId;
++import java.time.ZonedDateTime;
++import java.util.List;
++import java.util.Optional;
++import org.junit.jupiter.api.Assertions;
++import org.junit.jupiter.api.BeforeEach;
++import org.junit.jupiter.api.Test;
++import org.junit.jupiter.api.extension.ExtendWith;
++import org.mockito.Mock;
++import org.mockito.junit.jupiter.MockitoExtension;
++
++@ExtendWith(MockitoExtension.class)
++class AppointmentServiceTest {
++
++    private static final ZoneId CLINIC_ZONE = ZoneId.of("Europe/Warsaw");
++    private static final Long PROVIDER_ID = 1L;
++
++    @Mock
++    private AppointmentRepository appointmentRepository;
++
++    @Mock
++    private AppointmentTypeRepository appointmentTypeRepository;
++
++    @Mock
++    private RoomRepository roomRepository;
++
++    @Mock
++    private PatientQueryService patientQueryService;
++
++    @Mock
++    private ProviderRepository providerRepository;
++
++    private AppointmentService appointmentService;
++
++    private Appointment existingAppointment;
++
++    @BeforeEach
++    void setUp() {
++        ClinicClock clinicClock = new ClinicClock(
++                Clock.fixed(Instant.parse("2026-11-13T08:00:00Z"), CLINIC_ZONE));
++        appointmentService = new AppointmentService(appointmentRepository, appointmentTypeRepository,
++                roomRepository, patientQueryService, providerRepository, clinicClock, new SimpleMeterRegistry());
++
++        Provider provider = new Provider();
++        provider.setId(PROVIDER_ID);
++        provider.setProviderCode("PROV-001");
++        when(providerRepository.findByProviderCode("PROV-001")).thenReturn(Optional.of(provider));
++
++        existingAppointment = new Appointment();
++        existingAppointment.setProvider(provider);
++        existingAppointment.setSlot(new AppointmentSlot(
++                ZonedDateTime.parse("2026-12-02T10:00:00+01:00"),
++                ZonedDateTime.parse("2026-12-02T10:30:00+01:00")));
++
++        // Emulates the DB overlap query, which compares instants regardless of offset.
++        when(appointmentRepository.findOverlappingAppointments(eq(PROVIDER_ID), any(), any()))
++                .thenAnswer(invocation -> {
++                    ZonedDateTime start = invocation.getArgument(1);
++                    ZonedDateTime end = invocation.getArgument(2);
++                    AppointmentSlot slot = existingAppointment.getSlot();
++                    boolean overlaps = slot.getStart().toInstant().isBefore(end.toInstant())
++                            && slot.getEnd().toInstant().isAfter(start.toInstant());
++                    return overlaps ? List.of(existingAppointment) : List.of();
++                });
++    }
++
++    @Test
++    void shouldRejectBookingWhenSameInstantIsSentInUtc() {
++        stubBookingReferenceData();
++        lenient().when(appointmentRepository.save(any(Appointment.class)))
++                .thenAnswer(invocation -> invocation.getArgument(0));
++
++        Assertions.assertThrows(IllegalStateException.class, () -> appointmentService.bookAppointment(
++                "PAT-1001", "PROV-001", "CHECKUP",
++                ZonedDateTime.parse("2026-12-02T09:10:00Z"),
++                ZonedDateTime.parse("2026-12-02T09:20:00Z"),
++                null));
++
++        verify(appointmentRepository, never()).save(any());
++    }
++
++    @Test
++    void shouldBookWhenUtcSlotDoesNotOverlap() {
++        stubBookingReferenceData();
++        when(appointmentRepository.save(any(Appointment.class))).thenAnswer(invocation -> invocation.getArgument(0));
++
++        Appointment booked = appointmentService.bookAppointment(
++                "PAT-1001", "PROV-001", "CHECKUP",
++                ZonedDateTime.parse("2026-12-02T09:30:00Z"),
++                ZonedDateTime.parse("2026-12-02T09:40:00Z"),
++                null);
++
++        Assertions.assertEquals(AppointmentStatus.SCHEDULED, booked.getStatus());
++    }
++
++    @Test
++    void shouldReportSlotUnavailableWhenSameInstantIsSentInUtc() {
++        boolean available = appointmentService.isSlotAvailable("PROV-001",
++                ZonedDateTime.parse("2026-12-02T09:10:00Z"),
++                ZonedDateTime.parse("2026-12-02T09:20:00Z"));
++
++        Assertions.assertFalse(available);
++    }
++
++    private void stubBookingReferenceData() {
++        Patient patient = new Patient();
++        patient.setFirstName("Anna");
++        when(patientQueryService.findEntity("PAT-1001")).thenReturn(patient);
++        when(appointmentTypeRepository.findByTypeCode("CHECKUP")).thenReturn(Optional.of(new AppointmentType()));
++    }
++}

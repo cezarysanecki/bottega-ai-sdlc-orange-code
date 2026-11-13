@@ -1,0 +1,10 @@
+## RED (zmiana cofnięta)
+[ERROR] Tests run: 3, Failures: 2, Errors: 0, Skipped: 0
+## GREEN pełne
+[INFO] Tests run: 112, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+## API na 18183
+{"data":{"createAppointment":{"id":"3","status":"SCHEDULED"}}}
+# ta sama chwila w UTC (przed poprawką: SCHEDULED):
+{"errors":[{"message":"INTERNAL_ERROR for fd219257-4fc7-e1a5-38c8-a47caf91fe4c","locations":[{"line":1,"column":10}],"path":["createAppointment"],"extensions":{"classification":"INTERNAL_ERROR"}}],"data":null}
+1
