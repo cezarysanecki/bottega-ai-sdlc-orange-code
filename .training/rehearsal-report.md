@@ -171,6 +171,21 @@ Wymóg: 2 × 405 min = 810 min zajęć, z czego 60% to 486 min praktyki uczestni
 
   Każde z nich może zjeść zapas, dlatego potrzebny jest wcześniejszy setup: JDK, Docker, `npm ci`, jdtls i jeden przebieg `./mvnw -B test`.
 
+### Rozpiska bloków: teoria (T) i praktyka (P), w minutach
+Dzień 1
+- 09:00–10:45: T 09:00–09:35 (mapa SDLC, procesy, pokaz aplikacji) · P 09:35–10:10 ćw. 1 · T 10:10–10:45 (omówienie ćw. 1; model, agent, harness, kontekst) → T70/P35
+- 11:00–12:45: T 11:00–11:25 (kontekst; CLAUDE.md, settings, skille, agenci) · P 11:25–12:25 ćw. 2 · T 12:25–12:45 (zmyślone polecenia, granice CLAUDE.md) → T45/P60
+- 13:30–15:15: T 13:30–13:50 (wymaganie, kryteria, Plan Mode) · P 13:50–15:00 ćw. 3 · T 15:00–15:15 (red/green, diff) → T35/P70
+- 15:30–17:00: T 15:30–15:45 (skill a subagent, kontrakt artefaktu) · P 15:45–16:20 ćw. 4 · P 16:20–16:50 ćw. 5 · T 16:50–17:00 (podsumowanie) → T25/P65
+
+Dzień 2
+- 09:00–10:45: T 09:00–09:10 (recap) · P 09:10–09:55 ćw. 6 · T 09:55–10:05 (LSP a grep a linter; MCP) · P 10:05–10:25 ćw. 7 · P 10:25–10:40 ćw. 8 · T 10:40–10:45 → T25/P80
+- 11:00–12:45: T 11:00–11:25 (hooki, PostToolUse nie cofa zmian, bezpieczeństwo skryptu) · P 11:25–12:35 ćw. 9 · T 12:35–12:45 → T35/P70
+- 13:30–15:15: T 13:30–13:40 (workflow, refaktoring bez zmiany zachowania) · P 13:40–14:25 ćw. 10 · P 14:25–14:50 ćw. 11 · P 14:50–15:05 ćw. 12 · T 15:05–15:15 → T20/P85
+- 15:30–17:00: T 15:30–15:45 (Maister: bramki, koszt) · P 15:45–16:35 ćw. 13 · T 16:35–17:00 (porównanie z własnym workflow, zamknięcie) → T40/P50
+
+Suma: dzień 1 T175/P230, dzień 2 T120/P285, razem T295/P515.
+
 ### Uproszczenia, żeby zmieścić się w blokach
 - **Ćw. 11:** pary zamiast dwóch sesji na osobę. Połowa grupy robi wariant A, połowa B, na tej samej bazie i z tym samym promptem. Porównanie robimy na forum. Oszczędza to ok. 15 min i od razu daje więcej niż jedną parę prób.
 - **Ćw. 7 i 8:** jdtls i `.mcp.json` przygotowane wcześniej. Na zajęciach tylko jedno wywołanie LSP i jedno pytanie do Context7.
