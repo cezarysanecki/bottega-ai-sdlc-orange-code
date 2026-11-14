@@ -171,48 +171,76 @@ Wymóg: 2 × 405 min = 810 min zajęć, z czego 60% to 486 min praktyki uczestni
 
   Każde z nich może zjeść zapas, dlatego potrzebny jest wcześniejszy setup: JDK, Docker, `npm ci`, jdtls i jeden przebieg `./mvnw -B test`.
 
-### Rozpiska bloków: teoria (T) i praktyka (P)
-**Dzień 1** (T175 / P230)
+### Rozpiska bloków v2 (realne czasy; T = teoria, O = omówienie lub pokaz prowadzącego, P = praktyka)
+Założenia: rdzeń ćwiczeń ma realny czas, a po każdym ćwiczeniu jest omówienie. Jeśli grupa nie skończy ćwiczenia, prowadzący pokazuje je w tym slocie. Udział praktyki jest niższy niż 60% z ramy Bottegi; to świadoma decyzja.
+
+**Dzień 1** (T195 / O60 / P150)
 
 | Godzina | Typ | Min | Treść |
 |---|---|---|---|
-| 09:00–09:35 | T | 35 | Mapa SDLC, procesy uczestników, pokaz aplikacji |
-| 09:35–10:10 | P | 35 | Ćw. 1: rozmowa o aplikacji |
-| 10:10–10:45 | T | 35 | Omówienie ćw. 1; model, agent, harness, kontekst |
-| 11:00–11:25 | T | 25 | Kontekst; CLAUDE.md, settings, skille, agenci |
-| 11:25–12:25 | P | 60 | Ćw. 2: CLAUDE.md |
-| 12:25–12:45 | T | 20 | Zmyślone polecenia, granice CLAUDE.md |
+| 09:00–09:30 | T | 30 | Mapa SDLC, procesy uczestników, pokaz aplikacji |
+| 09:30–09:50 | P | 20 | Ćw. 1: rozmowa o aplikacji |
+| 09:50–10:00 | O | 10 | Omówienie ćw. 1 / pokaz |
+| 10:00–10:45 | T | 45 | Model, agent, harness, kontekst |
+| 11:00–11:20 | T | 20 | Pliki Claude Code: CLAUDE.md, settings, skille, agenci; @notation |
+| 11:20–11:45 | P | 25 | Ćw. 2: /init → krytyczne czyszczenie CLAUDE.md, sprawdzenie poleceń (Marek 03+04) |
+| 11:45–11:55 | O | 10 | Omówienie ćw. 2 / pokaz |
+| 11:55–12:45 | T | 50 | Context poisoning, okno kontekstu, granice CLAUDE.md, konwencje |
 | 13:30–13:50 | T | 20 | Wymaganie, kryteria, Plan Mode |
-| 13:50–15:00 | P | 70 | Ćw. 3: bugfix z planem |
-| 15:00–15:15 | T | 15 | Omówienie red/green i diffu |
+| 13:50–14:25 | P | 35 | Ćw. 3: bugfix z planem (trim) red→green |
+| 14:25–14:35 | O | 10 | Omówienie ćw. 3 / pokaz |
+| 14:35–15:00 | P | 25 | Ćw. 3b: zmiana UI ze szkicu (docs/screenshots/provider_details_drawing.png, Marek 02/102) |
+| 15:00–15:15 | O | 15 | Omówienie ćw. 3b / pokaz |
 | 15:30–15:45 | T | 15 | Skill a subagent, kontrakt artefaktu |
-| 15:45–16:20 | P | 35 | Ćw. 4: skill analizy |
-| 16:20–16:50 | P | 30 | Ćw. 5: subagent review |
-| 16:50–17:00 | T | 10 | Podsumowanie dnia |
+| 15:45–16:10 | P | 25 | Ćw. 4: skill analizy |
+| 16:10–16:30 | P | 20 | Ćw. 5: subagent review |
+| 16:30–16:45 | O | 15 | Omówienie ćw. 4–5 / pokaz |
+| 16:45–17:00 | T | 15 | Podsumowanie dnia |
 
-**Dzień 2** (T120 / P285)
+**Dzień 2** (T115 / O85 / P205)
 
 | Godzina | Typ | Min | Treść |
 |---|---|---|---|
 | 09:00–09:10 | T | 10 | Recap |
-| 09:10–09:55 | P | 45 | Ćw. 6: wspólny pipeline |
-| 09:55–10:05 | T | 10 | LSP, grep, linter; MCP |
-| 10:05–10:25 | P | 20 | Ćw. 7: LSP |
-| 10:25–10:40 | P | 15 | Ćw. 8: MCP |
-| 10:40–10:45 | T | 5 | Wnioski |
-| 11:00–11:25 | T | 25 | Hooki, PostToolUse nie cofa zmian, bezpieczeństwo skryptu |
-| 11:25–12:35 | P | 70 | Ćw. 9: hook + linter Java |
-| 12:35–12:45 | T | 10 | Omówienie |
-| 13:30–13:40 | T | 10 | Workflow SDLC, refaktoring bez zmiany zachowania |
-| 13:40–14:25 | P | 45 | Ćw. 10: workflow + refaktoring |
-| 14:25–14:50 | P | 25 | Ćw. 11: bez/ze standardami |
-| 14:50–15:05 | P | 15 | Ćw. 12: świeża sesja / handoff |
-| 15:05–15:15 | T | 10 | Porównanie standardów, handoff |
-| 15:30–15:45 | T | 15 | Maister: bramki, koszt |
-| 15:45–16:35 | P | 50 | Ćw. 13: Maister |
+| 09:10–09:40 | P | 30 | Ćw. 6: pipeline walidator→analyzer→plan→implementer na _tasks/UV-1698.md (Marek demo) |
+| 09:40–09:50 | O | 10 | Omówienie ćw. 6 / pokaz |
+| 09:50–10:05 | T | 15 | LSP a grep a linter; MCP |
+| 10:05–10:20 | P | 15 | Ćw. 7: LSP |
+| 10:20–10:30 | P | 10 | Ćw. 8: MCP |
+| 10:30–10:45 | O | 15 | Omówienie ćw. 7–8 / pokaz |
+| 11:00–11:20 | T | 20 | Hooki, PostToolUse nie cofa zmian, bezpieczeństwo skryptu |
+| 11:20–11:50 | P | 30 | Ćw. 9: hook + linter Java |
+| 11:50–12:00 | O | 10 | Omówienie ćw. 9 / pokaz |
+| 12:00–12:15 | T | 15 | Debugowanie, tight feedback loop |
+| 12:15–12:35 | P | 20 | Ćw. 9b: debug ze zrzutu ekranu (docs/screenshots/conflicting_appointment_error.png) |
+| 12:35–12:45 | O | 10 | Omówienie ćw. 9b / pokaz |
+| 13:30–13:45 | T | 15 | Pełny workflow SDLC, refaktoring bez zmiany zachowania |
+| 13:45–14:20 | P | 35 | Ćw. 10: workflow + refaktoring |
+| 14:20–14:30 | O | 10 | Omówienie ćw. 10 / pokaz |
+| 14:30–14:50 | P | 20 | Ćw. 11: standardy w parach A/B |
+| 14:50–15:00 | P | 10 | Ćw. 12: handoff do świeżej sesji |
+| 15:00–15:15 | O | 15 | Omówienie ćw. 11–12 / pokaz |
+| 15:30–15:45 | T | 15 | Maister: init i standardy (gotowa gałąź 201-init-maister), bramki, koszt |
+| 15:45–16:20 | P | 35 | Ćw. 13: Maister quick-bugfix |
+| 16:20–16:35 | O | 15 | Omówienie ćw. 13; pokaz development na UV-1699 / 210-development1 |
 | 16:35–17:00 | T | 25 | Porównanie z własnym workflow, zamknięcie |
 
-Razem T295 / P515 (szacunek).
+Razem: teoria 310, omówienia 145, praktyka 355 min z 810 (43% praktyki, 61% z omówieniami).
+
+### Zadania ze szkolenia Marka (gałęzie `upstream/*`) a ten program
+| Gałąź Marka | Zadanie | W próbie | Teraz |
+|---|---|---|---|
+| 02-image-task, 102-images | Zwijana sekcja lekarza ze szkicu odręcznego (`docs/screenshots/provider_details_drawing.png`) | pominięte | ćw. 3b |
+| zrzut `conflicting_appointment_error.png` | Błąd `INTERNAL_ERROR` przy kolizji wizyty widoczny w UI | pominięte jako zadanie (ten sam obszar badałem w ćw. 1 i 4) | ćw. 9b |
+| 03-init-task, 101-init | `/init` generuje CLAUDE.md | pominięte (CLAUDE.md pisałem ręcznie) | początek ćw. 2 |
+| 04-claude-md-task | Poprawa CLAUDE.md | ćw. 2 | ćw. 2 |
+| 103-planning | Planowanie | ćw. 3 | ćw. 3 |
+| 06-skill-task | Skill `code-review` (stary format `$ARGUMENTS`) + agent `integration-test-coverage-auditor` | inne treści w ćw. 4–5; audytor testów IT pominięty | opcjonalnie jako przykład w omówieniu ćw. 5 |
+| demo | Pipeline task-validator → task-analyzer → implementer na `_tasks/UV-1698.md` i `UV-1699.md` | ćw. 6 bez walidatora i bez plików zadań | ćw. 6 na UV-1698 z krokiem walidacji |
+| 201-init-maister(-sl) | `/maister:init` i standardy | pominięte | pokaz na gotowej gałęzi |
+| 210-development1 | Maister development: no-show (76 plików, 18 testów) | pominięte (tylko quick-bugfix) | pokaz w omówieniu ćw. 13 |
+
+Ćw. 3b, 9b oraz ćw. 6 na UV-1698 z walidatorem NIE były wykonane w tej próbie. Trzeba je przećwiczyć przed szkoleniem.
 
 ### Uproszczenia, żeby zmieścić się w blokach
 - **Ćw. 11:** pary zamiast dwóch sesji na osobę. Połowa grupy robi wariant A, połowa B, na tej samej bazie i z tym samym promptem. Porównanie robimy na forum. Oszczędza to ok. 15 min i od razu daje więcej niż jedną parę prób.
