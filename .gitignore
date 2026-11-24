@@ -21,3 +21,10 @@ dist/
 Thumbs.db
 /.playwright-mcp/
 /.serena/
+
+# Artefakty testów i narzędzi frontendu (vitest, vite, playwright)
+coverage/
+.vite/
+.eslintcache
+test-results/
+playwright-report/
